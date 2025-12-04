@@ -1,0 +1,104 @@
+Projet “Inter-Ville”
+Cahier des Charges
+
+1. Présentation du projet
+Vous allez développer en équipe un mini réseau social de défis destiné aux étudiants CDPI de La
+Plateforme.
+
+Chaque utilisateur pourra :
+-Proposer des challenges
+-Voir et commenter les challenges des autres
+-Participer aux challenges
+-Échanger via un chat
+-Gérer un profil simple (pseudo, ville, promo)
+
+L’objectif principal n’est pas la performance technique, mais la découverte :
+-du travail en équipe à distance,
+-de la collaboration sur un projet commun,
+-de l’organisation collective,
+-et du plaisir de créer ensemble.
+
+Ce projet est secondaire : les travaux donnés par vos formateurs restent prioritaires.
+Aucune pression, aucune note. L’objectif est d’apprendre et de tester, pas d’impressionner.
+
+2. Date de rendu
+Jeudi 18 décembre
+Rendu sous la forme :
+-d’un support de présentation (slides),
+-d’une démonstration du projet.
+
+3. Organisation des équipes
+
+-3 ou 4 personnes par groupe.
+-Aucun groupe ne contient deux étudiants de la même ville.
+-Un lead est désigné.
+Il veille à la bonne organisation, mais les décisions sont collectives.
+-Collaboration et communication bienveillante attendues.
+Vous expliquerez votre organisation et vos choix lors de la présentation.
+
+4. Comptes et sécurité (obligatoire)
+-Inscription strictement limitée aux adresses @laplateforme.io
+-Validation de l’adresse email obligatoire
+-Validation manuelle des comptes par un administrateur (formateur)
+-Profil utilisateur : pseudo, ville, année de promo (avatar optionnel)
+-Rôles :
+User : créer, commenter, participer
+Admin : valider les comptes, modérer
+
+5. Fonctionnalités obligatoires (MVP)
+Ce qui doit absolument être présent :
+-Inscription / Connexion
+-Liste des challenges
+-Création d’un challenge
+-Détail d’un challenge
+-Commentaires
+-Participation à un challenge
+-Profil simple
+-Chat (même basique, pas nécessairement en temps réel)
+
+Contenu des challenges :
+Au minimum du texte.
+Les images et vidéos sont possibles, mais restent optionnelles.
+Catégories
+Vous devez proposer au moins trois catégories.
+Exemples : Code, Cuisine, Gaming, Sport, Vidéo, Musique, Photo, Art, Culture, DIY.
+
+6. Qu’est-ce qu’un MVP ?
+Un MVP (Minimum Viable Product) est la version la plus simple et la plus épurée du projet qui reste
+fonctionnelle.
+Le but est d’avoir un outil qui fonctionne, même si les fonctionnalités sont limitées.
+L’objectif est de livrer un projet simple, cohérent et terminé, plutôt qu’un projet ambitieux mais
+incomplet.
+
+7. Fonctionnalités bonus (libres)
+Ces éléments ne sont pas obligatoires, mais vous pouvez les ajouter si vous en avez le temps ou l’envie :
+-Upload d’images ou de vidéos
+-Classements (par points, ville, promo, etc.)
+-Badges
+-Chat en temps réel
+-Filtres avancés
+-Modération plus complète
+-Tests, CI/CD
+-Déploiement public du projet (optionnel)
+
+8. Livrables
+Pour le rendu :
+-Code disponible sur GitHub
+-Présentation (slides)
+
+-Démonstration du projet
+
+9. Mise à l’honneur.
+Trois titres seront attribués :
+-Meilleure présentation
+-Projet le plus professionnel
+-Meilleure organisation d’équipe
+
+10. Esprit du projet
+Vous êtes libres de proposer.
+Vous essayez.
+Vous collaborez.
+Vous apprenez.
+Et surtout : vous vous amusez, en étant libres de proposer, d’imaginer, de créer et de faire de ce projet
+quelque chose qui vous ressemble.
+Le projet est à vous, c’est votre espace d’expression et de créativité.
