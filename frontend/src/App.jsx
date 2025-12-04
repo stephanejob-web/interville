@@ -3,14 +3,13 @@ import { Navbar } from './components/Navbar/Navbar';
 import { Home } from './pages/Home/Home';
 import { About } from './pages/About/About';
 import { NotFound } from './pages/NotFound/NotFound';
-import './styles/App.css';
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="app">
+      <div className="min-h-screen bg-base-100">
         <Navbar />
-        <main className="app-main">
+        <main>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />

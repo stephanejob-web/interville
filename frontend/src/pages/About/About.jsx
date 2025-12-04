@@ -1,29 +1,35 @@
 import { useApp } from '../../context/AppContext';
-import './About.css';
 
 export const About = () => {
   const { user, setUser } = useApp();
 
   return (
-    <div className="about">
-      <h1>À propos d'Interville</h1>
+    <div className="container mx-auto p-8">
+      <h1 className="text-4xl font-bold mb-4">À propos</h1>
 
-      <div className="context-demo">
-        <h2>Démo Context</h2>
-        <p>Utilisateur: {user || 'Non connecté'}</p>
-
-        <div className="actions">
-          <button onClick={() => setUser('Étudiant')}>
-            Se connecter
-          </button>
-          <button onClick={() => setUser(null)}>
-            Se déconnecter
-          </button>
-        </div>
+      <div className="mb-6">
+        <p className="mb-2">Utilisateur: {user || 'Non connecté'}</p>
+        <button
+          className="btn btn-primary mr-2"
+          onClick={() => setUser('Étudiant')}
+        >
+          Connexion
+        </button>
+        <button
+          className="btn btn-ghost"
+          onClick={() => setUser(null)}
+        >
+          Déconnexion
+        </button>
       </div>
 
-      <div className="about-content">
-        <p>Application développée avec React et Express.</p>
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-2">Technologies</h2>
+        <ul className="list-disc ml-6">
+          <li>React</li>
+          <li>Express</li>
+          <li>DaisyUI</li>
+        </ul>
       </div>
     </div>
   );
