@@ -1,26 +1,8 @@
-import { useToggle } from '../../hooks/useToggle';
-import { Button } from '../../components/Button/Button';
-import './Home.css';
-
 export const Home = () => {
-  const [isVisible, toggle] = useToggle(true);
-
   return (
-    <div className="home">
-      <h1>Page d'accueil</h1>
-      <p>Bienvenue sur Interville</p>
-
-      <div className="home-content">
-        <Button onClick={toggle}>
-          {isVisible ? 'Masquer' : 'Afficher'} le contenu
-        </Button>
-
-        {isVisible && (
-          <div className="content-box">
-            <p>Ceci est un exemple de contenu</p>
-          </div>
-        )}
-      </div>
+    <div className="container mx-auto p-8">
+      <h1 className="text-4xl font-bold mb-4">Accueil</h1>
+      <p className="text-lg">Bienvenue sur Interville</p>
     </div>
   );
 };
