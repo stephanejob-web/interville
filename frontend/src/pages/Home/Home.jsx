@@ -1,5 +1,5 @@
-import { useToggle } from '../hooks/useToggle';
-import { Button } from '../components/Button';
+import { useToggle } from '../../hooks/useToggle';
+import { Button } from '../../components/Button/Button';
 import './Home.css';
 
 export const Home = () => {
