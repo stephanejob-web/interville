@@ -175,6 +175,102 @@ PORT=5000
 VITE_API_URL=http://localhost:5000
 ```
 
+## Workflow Git
+
+### Organisation du travail
+
+1. **Branche principale** : `develop` (branche de développement)
+2. **Gestion des tâches** : Trello / Kanban
+3. **Convention de nommage des branches** : `feature/#numero-nom-tache`
+
+### Créer une branche depuis une tâche Trello
+
+**Exemple :** Thibault a la tâche **#19 Page Login** assignée sur Trello
+
+**Étape 1 - Se placer sur develop :**
+```bash
+git checkout develop
+git pull origin develop
+```
+
+**Étape 2 - Créer une nouvelle branche :**
+```bash
+git checkout -b feature/#19-page-login
+```
+
+**Convention de nommage des branches :**
+- Format : `feature/#numero-nom-de-la-tache`
+- Tout en minuscules
+- Séparer les mots par des tirets `-`
+- Exemple : `feature/#19-page-login`
+
+### Convention de nommage des commits (EN ANGLAIS)
+
+**Format :**
+```
+type(scope): description
+```
+
+**Types de commits :**
+- `feat` : Nouvelle fonctionnalité
+- `fix` : Correction de bug
+- `docs` : Documentation
+- `style` : Formatage, indentation (pas de changement de code)
+- `refactor` : Refactoring du code
+- `test` : Ajout ou modification de tests
+- `chore` : Tâches de maintenance
+
+**Exemples de commits :**
+```bash
+git add .
+git commit -m "feat(login): add login page component"
+git commit -m "feat(login): add form validation"
+git commit -m "fix(login): correct email validation regex"
+git commit -m "style(login): format login page code"
+```
+
+**Bonnes pratiques :**
+- Commits en **anglais uniquement**
+- Description courte et claire
+- Un commit = une fonctionnalité/correction
+- Faire des commits réguliers
+
+### Workflow complet
+
+**1. Récupérer une tâche sur Trello**
+- Exemple : #19 Page Login assignée à Thibault
+
+**2. Créer la branche depuis develop**
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b feature/#19-page-login
+```
+
+**3. Développer et commiter régulièrement**
+```bash
+# Faire vos modifications...
+
+git add .
+git commit -m "feat(login): add login page component"
+
+# Continuer à développer...
+
+git add .
+git commit -m "feat(login): add form validation"
+```
+
+**4. Pousser la branche sur GitHub**
+```bash
+git push origin feature/#19-page-login
+```
+
+**5. Créer une Pull Request (PR)**
+- Aller sur GitHub
+- Créer une PR de `feature/#19-page-login` vers `develop`
+- Demander une revue de code
+- Attendre l'approbation et merge
+
 ## Développement
 
 ### Ajouter une nouvelle page
