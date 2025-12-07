@@ -44,3 +44,7 @@ temp/
 # Uploads (si vous gérez des uploads d'images/vidéos)
 uploads/
 public/uploads/
+
+frontend/package-lock.json
+
+package-lock.json
