@@ -1,0 +1,102 @@
+╔═══════════════════════════════════════════════════════════════╗
+║     COMMENT INSTALLER LA BASE DE DONNÉES INTERVILLE          ║
+║                   (Guide pour debutants)                      ║
+╚═══════════════════════════════════════════════════════════════╝
+
+
+┌───────────────────────────────────────────────────────────────┐
+│  ETAPE 1 : Verifier que t'as tout installé                   │
+└───────────────────────────────────────────────────────────────┘
+
+Avant de commencer, assure-toi d'avoir:
+  → Node.js installé sur ton PC
+  → Les dépendances npm installées (tape: npm install)
+
+
+┌───────────────────────────────────────────────────────────────┐
+│  ETAPE 2 : Lancer l'installation complete                    │
+└───────────────────────────────────────────────────────────────┘
+
+C'est super simple! Tape juste cette commande:
+
+    node database/init.js
+
+Boom! C'est tout. Ca va:
+  1. Créer toutes les tables (users, challenges, categories, etc.)
+  2. Remplir la base avec des données de test pour jouer avec
+
+
+┌───────────────────────────────────────────────────────────────┐
+│  METHODE ALTERNATIVE : Installation en 2 etapes              │
+└───────────────────────────────────────────────────────────────┘
+
+Si tu veux faire les choses séparément (pourquoi pas!):
+
+1) Créer juste les tables (sans données):
+   node database/setup.js
+
+2) Ajouter les données de test apres:
+   node database/seed.js
+
+
+┌───────────────────────────────────────────────────────────────┐
+│  C'EST QUOI TOUS CES FICHIERS?                               │
+└───────────────────────────────────────────────────────────────┘
+
+├─ init.js       → Lance tout automatiquement (setup + seed)
+├─ setup.js      → Crée les tables vides
+├─ seed.js       → Remplit avec des données de test
+├─ db.js         → Connexion a la base (utilise par l'appli)
+└─ interville.db → Le fichier de la base de données SQLite
+
+
+┌───────────────────────────────────────────────────────────────┐
+│  DONNEES DE TEST INCLUSES                                     │
+└───────────────────────────────────────────────────────────────┘
+
+Une fois installé, tu auras:
+  → 6 utilisateurs de test
+  → 10 categories de challenges
+  → 10 challenges deja créés
+  → Des participations, commentaires, likes, etc.
+
+Identifiants de test:
+  Email: admin@laplateforme.io
+  Mot de passe: password123
+
+(Y'a aussi marie.dubois@laplateforme.io, lucas.martin@laplateforme.io
+avec le meme mdp si tu veux tester plusieurs comptes)
+
+
+┌───────────────────────────────────────────────────────────────┐
+│  PROBLEMES COURANTS                                           │
+└───────────────────────────────────────────────────────────────┘
+
+❌ "Cannot find module 'better-sqlite3'"
+   → Tape: npm install
+
+❌ La base existe deja et tu veux recommencer?
+   → Pas de stress! Les scripts suppriment automatiquement
+      les anciennes tables avant de recréer.
+   → Ou sinon supprime database/interville.db et relance
+
+❌ "Permission denied"
+   → Verifie que tu es bien dans le dossier backend/
+
+
+┌───────────────────────────────────────────────────────────────┐
+│  APRES L'INSTALLATION                                         │
+└───────────────────────────────────────────────────────────────┘
+
+Une fois que c'est fait, tu peux:
+  1. Lancer le serveur: npm run dev
+  2. Tester l'API avec tes données de test
+  3. Te connecter avec les comptes de test
+
+Voila c'est tout! Ez pz 🎮
+
+
+═══════════════════════════════════════════════════════════════
+            Des questions? Check le code dans les
+              fichiers .js, c'est bien commenté!
+═══════════════════════════════════════════════════════════════
