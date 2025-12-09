@@ -74,10 +74,18 @@ export const Challenges = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 py-12 max-w-4xl">
-        {/* Titre simple */}
-        <h1 className="text-3xl font-light text-gray-800 mb-12">
-          Challenges
-        </h1>
+        {/* Titre et bouton créer */}
+        <div className="flex items-center justify-between mb-12">
+          <h1 className="text-3xl font-light text-gray-800">
+            Challenges
+          </h1>
+          <button
+            onClick={() => navigate('/challenges/new')}
+            className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-700 transition-colors"
+          >
+            Créer un challenge
+          </button>
+        </div>
 
         {/* Liste des challenges */}
         {challenges.length === 0 ? (
@@ -89,7 +97,7 @@ export const Challenges = () => {
             {challenges.map((challenge) => (
               <div
                 key={challenge.id}
-                className="border-b border-gray-200 pb-8 hover:bg-gray-50 transition-colors p-6 -mx-6"
+                className="border border-gray-200 pb-8 hover:shadow-2xl transition-shadow p-6 mb-6 rounded-lg shadow-lg"
               >
                 {/* Titre */}
                 <h2 className="text-xl font-medium text-gray-900 mb-2">
@@ -110,10 +118,16 @@ export const Challenges = () => {
 
                 {/* Auteur et stats en ligne */}
                 <div className="flex items-center justify-between text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-900">{challenge.author_pseudo}</span>
-                    <span>•</span>
-                    <span>{challenge.author_city}</span>
+                  <div className="flex items-center gap-3">
+                    {/* Avatar */}
+                    <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-white text-xs font-medium shadow-md">
+                      {challenge.author_pseudo.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900">{challenge.author_pseudo}</span>
+                      <span>•</span>
+                      <span>{challenge.author_city}</span>
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-6">
