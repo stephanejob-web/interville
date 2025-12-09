@@ -209,6 +209,15 @@ export const ChallengeDetail = () => {
                 </button>
               </>
             )}
+            {/* Bouton Participer (pour les non-auteurs) */}
+            {!isAuthor() && (
+              <button
+                onClick={() => alert('Fonctionnalité de participation à venir')}
+                className="px-6 py-2 rounded bg-gray-900 text-white hover:bg-gray-700 transition-colors"
+              >
+                Participer
+              </button>
+            )}
             {/* Bouton Like (pour tous) */}
             <button
               onClick={handleLike}

@@ -7,6 +7,7 @@ import {Login} from "./pages/Login/Login";
 import { Register } from './pages/Register/Register';
 import { Chat } from './pages/Chat/Chat';
 import { Challenges } from './pages/Challenges/Challenges';
+import { MyChallenges } from './pages/MyChallenges/MyChallenges';
 import { CreateChallenge } from './pages/CreateChallenge/CreateChallenge';
 import { ChallengeDetail } from './pages/ChallengeDetail/ChallengeDetail';
 import { EditChallenge } from './pages/EditChallenge/EditChallenge';
@@ -27,6 +28,11 @@ function App() {
             <Route path="/challenges" element={
               <ProtectedRoute>
                 <Challenges />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-challenges" element={
+              <ProtectedRoute>
+                <MyChallenges />
               </ProtectedRoute>
             } />
             <Route path="/challenges/new" element={
