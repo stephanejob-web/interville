@@ -440,6 +440,21 @@ app.get('/api/challenges/:id', authenticateToken, (req, res) => {
     }
 });
 
+
+/**
+ * DELETE /api/challenges/:id - Supprimer un challenge
+ */
+app.delete('/api/challenges/:id', authenticateToken, (req, res) => {
+    try {
+        const challengeId = req.params.id;
+        db.prepare('DELETE FROM challenges WHERE id = ?').run(challengeId);
+        res.json({ message: 'Challenge supprimé' });
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+})
+
 /**
  * POST /api/challenges/ - Creer un challegnes
  *
