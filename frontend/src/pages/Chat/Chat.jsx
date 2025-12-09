@@ -20,6 +20,10 @@ export const Chat = () => {
     const [messages, setMessages] = useState([])
 
     useEffect(() => {
+        // Récupérer l'utilisateur connecté depuis localStorage
+        const userString = localStorage.getItem('user')
+        const loggedUser = userString ? JSON.parse(userString) : null
+
         // Connecter le socket dès le début
         const newSocket = io('http://localhost:3000')
         socketRef.current = newSocket
@@ -28,8 +32,9 @@ export const Chat = () => {
             console.log('✅ Connecté au serveur Socket.IO')
             console.log('ID de socket:', newSocket.id)
 
-            const randomUsername = `Utilisateur_${Math.floor(Math.random() * 10000)}`
-            newSocket.emit('setUsername', randomUsername)
+            // Utiliser le pseudo de l'utilisateur connecté
+            const username = loggedUser ? loggedUser.pseudo : `Utilisateur_${Math.floor(Math.random() * 10000)}`
+            newSocket.emit('setUsername', username)
         })
 
         newSocket.on('usernameAccepted', (username, usernames) => {
@@ -121,11 +126,19 @@ export const Chat = () => {
                                         message: msg.text,
                                         sentTime: new Date(msg.timestamp).toLocaleTimeString(),
                                         sender: msg.username,
-                                        direction: msg.username === user ? 'outgoing' : 'incoming',
+                                        // Toujours afficher en "incoming" pour voir le pseudo
+                                        direction: 'incoming',
                                         position: 'single'
                                     }}
+                                    // Ajouter un style pour distinguer vos messages
+                                    style={msg.username === user ? { backgroundColor: '#e3f2fd' } : {}}
                                 >
-                                    <Message.Header sender={msg.username} sentTime={new Date(msg.timestamp).toLocaleTimeString()} />
+                                    <Message.Header
+                                        sender={msg.username}
+                                        sentTime={new Date(msg.timestamp).toLocaleTimeString()}
+                                        // Mettre en gras votre pseudo
+                                        style={msg.username === user ? { fontWeight: 'bold' } : {}}
+                                    />
                                 </Message>
                             ))
                         )}
