@@ -87,60 +87,57 @@ export const Challenges = () => {
           </button>
         </div>
 
-        {/* Liste des challenges */}
+        {/* Galerie des challenges */}
         {challenges.length === 0 ? (
           <div className="text-center text-gray-500 py-20">
             Aucun challenge disponible
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {challenges.map((challenge) => (
               <div
                 key={challenge.id}
-                className="border border-gray-200 pb-8 hover:shadow-2xl transition-shadow p-6 mb-6 rounded-lg shadow-lg"
+                className="border border-gray-200 hover:border-gray-900 transition-all duration-200 rounded p-6 flex flex-col h-full cursor-pointer bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] hover:-translate-y-1"
+                onClick={() => navigate(`/challenges/${challenge.id}`)}
               >
-                {/* Titre */}
-                <h2 className="text-xl font-medium text-gray-900 mb-2">
-                  {challenge.title}
-                </h2>
-
-                {/* Catégorie et difficulté - texte simple */}
-                <div className="flex gap-3 mb-4 text-sm text-gray-600">
-                  <span>{challenge.category_name}</span>
-                  <span>•</span>
-                  <span className="capitalize">{challenge.difficulty}</span>
+                {/* Header */}
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-3 text-xs text-gray-600">
+                    <span>{challenge.category_name}</span>
+                    <span>•</span>
+                    <span className="capitalize">{challenge.difficulty}</span>
+                  </div>
+                  <h2 className="text-lg font-medium text-gray-900 line-clamp-2">
+                    {challenge.title}
+                  </h2>
                 </div>
 
                 {/* Description */}
-                <p className="text-gray-700 mb-6 leading-relaxed">
+                <p className="text-sm text-gray-600 mb-6 leading-relaxed line-clamp-3 flex-1">
                   {challenge.description}
                 </p>
 
-                {/* Auteur et stats en ligne */}
-                <div className="flex items-center justify-between text-sm text-gray-600">
-                  <div className="flex items-center gap-3">
-                    {/* Avatar */}
-                    <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-white text-xs font-medium shadow-md">
-                      {challenge.author_pseudo.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">{challenge.author_pseudo}</span>
-                      <span>•</span>
-                      <span>{challenge.author_city}</span>
-                    </div>
+                {/* Footer */}
+                <div className="space-y-4">
+                  {/* Stats */}
+                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <span>{challenge.likes_count} likes</span>
+                    <span>{challenge.comments_count} commentaires</span>
                   </div>
 
-                  <div className="flex items-center gap-6">
-                    <div className="flex gap-4">
-                      <span>{challenge.likes_count} likes</span>
-                      <span>{challenge.comments_count} commentaires</span>
+                  {/* Auteur */}
+                  <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                    <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-white text-xs font-medium">
+                      {challenge.author_pseudo.charAt(0).toUpperCase()}
                     </div>
-                    <button
-                      onClick={() => navigate(`/challenges/${challenge.id}`)}
-                      className="text-gray-900 font-medium hover:underline"
-                    >
-                      Détails →
-                    </button>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {challenge.author_pseudo}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {challenge.author_city}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
