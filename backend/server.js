@@ -440,6 +440,89 @@ app.get('/api/challenges/:id', authenticateToken, (req, res) => {
     }
 });
 
+/**
+ * POST /api/challenges/ - Creer un challegnes
+ *
+ * Headers requis :
+ * - Authorization: Bearer TOKEN
+ *
+ * Paramètres :
+ *      - title
+ *     - description
+ *     - category_id
+ *     - difficulty
+ *     - user_id (utilisateur connecté)
+ *     - image_url (peut être NULL)
+ *     - video_url (peut être NULL)
+ *
+ * */
+
+app.post('/api/challenges', authenticateToken, (req, res) => {
+    try {
+        // ÉTAPE 1 : Récupérer les données du body et du token
+        const { title, description, category_id, difficulty, image_url, video_url } = req.body;
+        const userId = req.user.userId;  // L'utilisateur connecté (vient du token JWT)
+
+        // VALIDATION : Vérifier les champs obligatoires
+        if (!title || !description || !category_id || !difficulty) {
+            return res.status(400).json({
+                error: 'Les champs title, description, category_id et difficulty sont obligatoires'
+            });
+        }
+
+        // VALIDATION : Vérifier que la difficulté est valide
+        const validDifficulties = ['facile', 'moyen', 'difficile'];
+        if (!validDifficulties.includes(difficulty)) {
+            return res.status(400).json({
+                error: 'La difficulté doit être "facile", "moyen" ou "difficile"'
+            });
+        }
+
+        // VALIDATION : Vérifier que la catégorie existe
+        const category = db.prepare('SELECT id FROM categories WHERE id = ?').get(category_id);
+        if (!category) {
+            return res.status(404).json({
+                error: 'Catégorie introuvable. Les IDs valides sont de 1 à 10.'
+            });
+        }
+
+        // ÉTAPE 2 : Insérer le challenge en base de données
+        const result = db.prepare(`
+            INSERT INTO challenges (title, description, category_id, difficulty, user_id, image_url, video_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).run(title, description, category_id, difficulty, userId, image_url || null, video_url || null);
+
+        const challengeId = result.lastInsertRowid;
+
+        // ÉTAPE 3 : Récupérer le challenge créé avec toutes les infos
+        const challenge = db.prepare(`
+            SELECT
+                c.*,
+                u.id as author_id,
+                u.pseudo as author_pseudo,
+                u.city as author_city,
+                u.promo as author_promo,
+                u.avatar_url as author_avatar,
+                cat.name as category_name,
+                cat.description as category_description
+            FROM challenges c
+            JOIN users u ON c.user_id = u.id
+            JOIN categories cat ON c.category_id = cat.id
+            WHERE c.id = ?
+        `).get(challengeId);
+
+        // SUCCÈS : Retourner le challenge créé
+        res.status(201).json({
+            message: 'Challenge créé avec succès !',
+            challenge: challenge
+        });
+
+    } catch (error) {
+        console.error('❌ Erreur lors de la création du challenge:', error);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+})
+
 
 /**
  * POST /api/challenges/:id/like - Liker/Unliker un challenge (toggle)
