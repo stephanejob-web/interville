@@ -10,6 +10,12 @@ export const Navbar = () => {
         <NavLink to="/" className="btn btn-sm btn-ghost">
           Accueil
         </NavLink>
+        <NavLink to="/login" className="btn btn-sm btn-ghost">
+         Login
+        </NavLink>
+        <NavLink to="/register" className="btn btn-sm btn-ghost">
+         Register
+        </NavLink>
         <NavLink to="/about" className="btn btn-sm btn-ghost">
           À propos
         </NavLink>
