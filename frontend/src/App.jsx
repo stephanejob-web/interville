@@ -6,6 +6,8 @@ import { About } from './pages/About/About';
 import {Login} from "./pages/Login/Login";
 import { Register } from './pages/Register/Register';
 import { Chat } from './pages/Chat/Chat';
+import { Challenges } from './pages/Challenges/Challenges';
+import { ChallengeDetail } from './pages/ChallengeDetail/ChallengeDetail';
 import { NotFound } from './pages/NotFound/NotFound';
 
 function App() {
@@ -19,7 +21,17 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login/>} />
             <Route path="/register" element={<Register />} />
-            {/* Route protégée : accessible uniquement si connecté */}
+            {/* Routes protégées : accessibles uniquement si connecté */}
+            <Route path="/challenges" element={
+              <ProtectedRoute>
+                <Challenges />
+              </ProtectedRoute>
+            } />
+            <Route path="/challenges/:id" element={
+              <ProtectedRoute>
+                <ChallengeDetail />
+              </ProtectedRoute>
+            } />
             <Route path="/chat" element={
               <ProtectedRoute>
                 <Chat />

@@ -45,11 +45,16 @@ export const Navbar = () => {
           Accueil
         </NavLink>
 
-        {/* Afficher Chat seulement si connecté */}
+        {/* Afficher Challenges et Chat seulement si connecté */}
         {isLoggedIn && (
-          <NavLink to="/chat" className="btn btn-sm btn-ghost">
-            Chat
-          </NavLink>
+          <>
+            <NavLink to="/challenges" className="btn btn-sm btn-ghost">
+              Challenges
+            </NavLink>
+            <NavLink to="/chat" className="btn btn-sm btn-ghost">
+              Chat
+            </NavLink>
+          </>
         )}
 
         {/* Afficher Login/Register seulement si NON connecté */}
