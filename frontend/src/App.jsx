@@ -8,6 +8,7 @@ import { Register } from './pages/Register/Register';
 import { Chat } from './pages/Chat/Chat';
 import { Challenges } from './pages/Challenges/Challenges';
 import { ChallengeDetail } from './pages/ChallengeDetail/ChallengeDetail';
+import { EditChallenge } from './pages/EditChallenge/EditChallenge';
 import { NotFound } from './pages/NotFound/NotFound';
 
 function App() {
@@ -30,6 +31,11 @@ function App() {
             <Route path="/challenges/:id" element={
               <ProtectedRoute>
                 <ChallengeDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/challenges/:id/edit" element={
+              <ProtectedRoute>
+                <EditChallenge />
               </ProtectedRoute>
             } />
             <Route path="/chat" element={

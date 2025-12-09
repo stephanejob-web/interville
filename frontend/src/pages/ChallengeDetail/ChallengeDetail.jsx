@@ -9,6 +9,7 @@ export const ChallengeDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLiking, setIsLiking] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Récupérer les détails du challenge au chargement
   useEffect(() => {
@@ -90,6 +91,50 @@ export const ChallengeDetail = () => {
     }
   };
 
+  // Fonction pour supprimer le challenge
+  const handleDelete = async () => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce challenge ?')) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+
+      // Récupérer le token
+      const token = localStorage.getItem('token');
+
+      // Appel à l'API pour supprimer
+      await axios.delete(`http://localhost:3000/api/challenges/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log('Challenge supprimé');
+
+      // Rediriger vers la liste des challenges
+      navigate('/challenges');
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+      alert('Erreur lors de la suppression du challenge');
+      setIsDeleting(false);
+    }
+  };
+
+  // Fonction pour éditer le challenge
+  const handleEdit = () => {
+    navigate(`/challenges/${id}/edit`);
+  };
+
+  // Vérifier si l'utilisateur connecté est l'auteur
+  const isAuthor = () => {
+    const userString = localStorage.getItem('user');
+    if (!userString || !challenge) return false;
+
+    const user = JSON.parse(userString);
+    return user.id === challenge.author_id;
+  };
+
   // Affichage pendant le chargement
   if (isLoading) {
     return (
@@ -140,22 +185,43 @@ export const ChallengeDetail = () => {
           ← Retour aux challenges
         </button>
 
-        {/* Titre et bouton like */}
+        {/* Titre et boutons */}
         <div className="flex items-start justify-between mb-4">
           <h1 className="text-3xl font-light text-gray-900">
             {challenge.title}
           </h1>
-          <button
-            onClick={handleLike}
-            disabled={isLiking}
-            className={`px-4 py-2 rounded transition-colors ${
-              challenge.user_has_liked
-                ? 'bg-gray-900 text-white hover:bg-gray-700'
-                : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-            } disabled:opacity-50`}
-          >
-            {challenge.user_has_liked ? '❤️ Liké' : '🤍 Liker'}
-          </button>
+          <div className="flex gap-2">
+            {/* Boutons Éditer et Supprimer (uniquement pour l'auteur) */}
+            {isAuthor() && (
+              <>
+                <button
+                  onClick={handleEdit}
+                  className="px-4 py-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200 transition-colors"
+                >
+                  Éditer
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="px-4 py-2 rounded bg-red-100 text-red-700 hover:bg-red-200 transition-colors disabled:opacity-50"
+                >
+                  {isDeleting ? 'Suppression...' : 'Supprimer'}
+                </button>
+              </>
+            )}
+            {/* Bouton Like (pour tous) */}
+            <button
+              onClick={handleLike}
+              disabled={isLiking}
+              className={`px-4 py-2 rounded transition-colors ${
+                challenge.user_has_liked
+                  ? 'bg-gray-900 text-white hover:bg-gray-700'
+                  : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+              } disabled:opacity-50`}
+            >
+              {challenge.user_has_liked ? '❤️ Liké' : '🤍 Liker'}
+            </button>
+          </div>
         </div>
 
         {/* Catégorie et difficulté */}
