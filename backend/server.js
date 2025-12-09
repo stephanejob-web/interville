@@ -456,6 +456,32 @@ app.delete('/api/challenges/:id', authenticateToken, (req, res) => {
 })
 
 /**
+ * PUT /api/challenges/:id - Modifier un challenge
+ */
+app.put('/api/challenges/:id', authenticateToken, (req, res) => {
+    try {
+        const challengeId = req.params.id;
+        const { title, description, category_id, difficulty, image_url, video_url } = req.body;
+
+        if (!title || !description || !category_id || !difficulty) {
+            return res.status(400).json({ error: 'Tous les champs sont requis' });
+        }
+
+        db.prepare(`
+            UPDATE challenges
+            SET title = ?, description = ?, category_id = ?, difficulty = ?, image_url = ?, video_url = ?
+            WHERE id = ?
+        `).run(title, description, category_id, difficulty, image_url || null, video_url || null, challengeId);
+
+        res.json({ message: 'Challenge modifié' });
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+})
+
+/**
  * POST /api/challenges/ - Creer un challegnes
  *
  * Headers requis :
