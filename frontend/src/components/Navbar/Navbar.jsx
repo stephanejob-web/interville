@@ -13,6 +13,9 @@ export const Navbar = () => {
         <NavLink to="/chat" className="btn btn-sm btn-ghost">
           Chat
         </NavLink>
+        <NavLink to="/create-challenge" className="btn btn-sm btn-ghost">
+          CreateChallenge
+        </NavLink>
         <NavLink to="/login" className="btn btn-sm btn-ghost">
          Login
         </NavLink>

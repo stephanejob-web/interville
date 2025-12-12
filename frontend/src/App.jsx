@@ -5,6 +5,7 @@ import { About } from './pages/About/About';
 import {Login} from "./pages/Login/Login";
 import { Register } from './pages/Register/Register';
 import { Chat } from './pages/Chat/Chat';
+import { CreateChallenge } from './pages/CreateChallenge/CreateChallenge';
 import { NotFound } from './pages/NotFound/NotFound';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
             <Route path="/login" element={<Login/>} />
             <Route path="/register" element={<Register />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/create-challenge" element={<CreateChallenge />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
