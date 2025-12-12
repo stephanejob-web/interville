@@ -129,7 +129,7 @@ export const CreateChallenge = () => {
               onChange={handleChange}
               required
               placeholder="Ex: Faire 50 pompes en une série"
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
             />
           </div>
 
@@ -145,7 +145,7 @@ export const CreateChallenge = () => {
               required
               rows="6"
               placeholder="Décrivez votre challenge en détail..."
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
             />
           </div>
 
@@ -159,7 +159,7 @@ export const CreateChallenge = () => {
               value={formData.category_id}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
             >
               <option value="">Sélectionner une catégorie</option>
               {categories.map(cat => (
@@ -180,7 +180,7 @@ export const CreateChallenge = () => {
               value={formData.difficulty}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
             >
               <option value="">Sélectionner une difficulté</option>
               <option value="facile">Facile</option>
@@ -199,7 +199,7 @@ export const CreateChallenge = () => {
               name="image_url"
               value={formData.image_url}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
               placeholder="https://example.com/image.jpg"
             />
           </div>
@@ -214,7 +214,7 @@ export const CreateChallenge = () => {
               name="video_url"
               value={formData.video_url}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
               placeholder="https://youtube.com/watch?v=..."
             />
           </div>
