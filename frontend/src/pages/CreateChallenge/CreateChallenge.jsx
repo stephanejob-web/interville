@@ -30,7 +30,7 @@ export const CreateChallenge = () => {
         }
 
         // Récupérer les catégories
-        const response = await axios.get('http://localhost:3000/api/categories', {
+        const response = await axios.get('http://192.168.10.108:3000/api/categories', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -66,7 +66,7 @@ export const CreateChallenge = () => {
 
       // Appel à l'API pour créer le challenge
       const response = await axios.post(
-        'http://localhost:3000/api/challenges',
+        'http://192.168.10.108:3000/api/challenges',
         formData,
         {
           headers: { 'Authorization': `Bearer ${token}` }

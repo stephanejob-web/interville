@@ -31,7 +31,7 @@ export const EditChallenge = () => {
         }
 
         // Récupérer le challenge
-        const challengeResponse = await axios.get(`http://localhost:3000/api/challenges/${id}`, {
+        const challengeResponse = await axios.get(`http://192.168.10.108:3000/api/challenges/${id}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
