@@ -10,8 +10,6 @@ export const useChallenge = (id) => {
         getChallengeById(id)
             .then(response => setChallenge(response.data.challenge))
             .catch(error =>
-                console.log(error),
-                console.log("ID usado:", id),
                 setError(error))
             .finally(() => setLoading(false));
     }, [id]);
