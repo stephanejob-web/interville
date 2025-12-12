@@ -26,7 +26,7 @@ export const Login = () => {
 
     try {
       // Appel à l'API backend pour se connecter
-      const response = await axios.post('http://localhost:3000/api/login', {
+      const response = await axios.post('http://192.168.10.108:3000/api/login', {
         email: email,
         password: password
       });

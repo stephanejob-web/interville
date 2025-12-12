@@ -15,7 +15,7 @@ export const Chat = () => {
         const loggedUser = userString ? JSON.parse(userString) : null
 
         // Connecter le socket dès le début
-        const newSocket = io('http://localhost:3000')
+        const newSocket = io('http://192.168.10.108:3000')
         socketRef.current = newSocket
 
         newSocket.on('connect', () => {

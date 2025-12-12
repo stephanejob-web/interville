@@ -71,7 +71,7 @@ export const Register = () => {
       };
 
       // Appel à l'API backend pour s'inscrire
-      const response = await axios.post('http://localhost:3000/api/register', apiData);
+      const response = await axios.post('http://192.168.10.108:3000/api/register', apiData);
 
       console.log('Inscription réussie !', response.data);
 
