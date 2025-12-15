@@ -22,7 +22,7 @@ export const Challenges = () => {
         }
 
         // Appel à l'API pour récupérer les challenges
-        const response = await axios.get('http://192.168.10.108:3000/api/challenges', {
+        const response = await axios.get('http://localhost:3000/api/challenges', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

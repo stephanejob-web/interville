@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 3000;  // Port du serveur (3000 par défaut)
 // Configuration CORS - Liste des origines autorisées
 const allowedOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:5173', 'http://192.168.10.108:5173'];
+    : ['http://localhost:5173'];
 
 // Fonction pour vérifier si l'origine est autorisée
 const corsOptions = {

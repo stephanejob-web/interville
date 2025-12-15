@@ -24,7 +24,7 @@ export const MyChallenges = () => {
         const user = JSON.parse(userString);
 
         // Récupérer tous les challenges
-        const response = await axios.get('http://192.168.10.108:3000/api/challenges', {
+        const response = await axios.get('http://localhost:3000/api/challenges', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

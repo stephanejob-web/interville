@@ -25,7 +25,7 @@ export const ChallengeDetail = () => {
         }
 
         // Appel à l'API pour récupérer les détails complets du challenge
-        const response = await axios.get(`http://192.168.10.108:3000/api/challenges/${id}`, {
+        const response = await axios.get(`http://localhost:3000/api/challenges/${id}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
