@@ -12,7 +12,7 @@ pnpm-debug.log*
 .env.test.local
 .env.production.local
 
- IDE - VSCode
+IDE - VSCode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -48,3 +48,5 @@ public/uploads/
 frontend/package-lock.json
 
 package-lock.json
+
+backend/database/*.db
