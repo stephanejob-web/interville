@@ -29,10 +29,10 @@ const PORT = process.env.PORT || 3000;  // Port du serveur (3000 par défaut)
 const serveurHTTP = http.createServer(app)
 
 const io = new Server(serveurHTTP, {
-    cors: {
-        origin: "http://localhost:5173",
-        methods: ["GET", "POST"]
-    }
+	cors: {
+		origin: "http://localhost:5173",
+		methods: ["GET", "POST"]
+	}
 })
 
 // Configuration JWT (tokens d'authentification)
@@ -68,30 +68,30 @@ app.use(express.json());
 // ═══════════════════════════════════════════════════════════════════════════
 
 const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+	const authHeader = req.headers['authorization'];
+	const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) {
-        return res.status(401).json({ error: 'Token manquant. Authentification requise.' });
-    }
+	if (!token) {
+		return res.status(401).json({ error: 'Token manquant. Authentification requise.' });
+	}
 
     // Vérifier que le token est valide
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ error: 'Token invalide ou expiré.' });
-        }
+	jwt.verify(token, JWT_SECRET, (err, user) => {
+		if (err) {
+			return res.status(403).json({ error: 'Token invalide ou expiré.' });
+		}
 
         // Token valide : ajouter les infos user à la requête
-        req.user = user;
+		req.user = user;
         next();  // Continuer vers la route
     });
 };
 
 const requireAdmin = (req, res, next) => {
-    if (req.user.role !== 'admin') {
-        return res.status(403).json({ error: 'Accès refusé. Droits administrateur requis.' });
-    }
-    next();
+	if (req.user.role !== 'admin') {
+		return res.status(403).json({ error: 'Accès refusé. Droits administrateur requis.' });
+	}
+	next();
 };
 
 
@@ -101,125 +101,125 @@ const requireAdmin = (req, res, next) => {
 
 
 app.get('/', (req, res) => {
-    res.json({ message: 'Bienvenue sur le serveur Interville!' });
+	res.json({ message: 'Bienvenue sur le serveur Interville!' });
 });
 
 
 app.post('/api/register', async (req, res) => {
-    try {
-        const { email, password, pseudo, city, promo } = req.body;
+	try {
+		const { email, password, pseudo, city, promo } = req.body;
 
         // VALIDATION : Vérifier que tous les champs sont présents
-        if (!email || !password || !pseudo || !city || !promo) {
-            return res.status(400).json({
-                error: 'Tous les champs sont requis'
-            });
-        }
+		if (!email || !password || !pseudo || !city || !promo) {
+			return res.status(400).json({
+				error: 'Tous les champs sont requis'
+			});
+		}
 
         // VALIDATION : Vérifier que l'email est @laplateforme.io
-        if (!email.endsWith('@laplateforme.io')) {
-            return res.status(400).json({
-                error: 'Seules les adresses @laplateforme.io sont acceptées'
-            });
-        }
+		if (!email.endsWith('@laplateforme.io')) {
+			return res.status(400).json({
+				error: 'Seules les adresses @laplateforme.io sont acceptées'
+			});
+		}
 
         // VALIDATION : Vérifier si l'email n'est pas déjà utilisé
-        const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
-        if (existingUser) {
-            return res.status(400).json({
-                error: 'Cet email est déjà utilisé'
-            });
-        }
+		const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+		if (existingUser) {
+			return res.status(400).json({
+				error: 'Cet email est déjà utilisé'
+			});
+		}
 
         // SÉCURITÉ : Hasher le mot de passe
-        const hashedPassword = await bcrypt.hash(password, 10);
+		const hashedPassword = await bcrypt.hash(password, 10);
 
         // INSERTION : Créer le compte dans la base de données
-        const result = db.prepare(`
+		const result = db.prepare(`
             INSERT INTO users (email, password, pseudo, city, promo, role, email_verified, account_validated)
             VALUES (?, ?, ?, ?, ?, 'user', 0, 0)
-        `).run(email, hashedPassword, pseudo, city, promo);
+		`).run(email, hashedPassword, pseudo, city, promo);
 
         // SUCCÈS : Compte créé
-        res.status(201).json({
-            message: 'Inscription réussie ! Votre compte doit être validé par un administrateur.',
-            userId: result.lastInsertRowid
-        });
+		res.status(201).json({
+			message: 'Inscription réussie ! Votre compte doit être validé par un administrateur.',
+			userId: result.lastInsertRowid
+		});
 
-    } catch (error) {
-        console.error('❌ Erreur lors de l\'inscription:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+	} catch (error) {
+		console.error('❌ Erreur lors de l\'inscription:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
 });
 
 app.post('/api/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
+	try {
+		const { email, password } = req.body;
 
         // VALIDATION : Vérifier que les champs sont présents
-        if (!email || !password) {
-            return res.status(400).json({
-                error: 'Email et mot de passe requis'
-            });
-        }
+		if (!email || !password) {
+			return res.status(400).json({
+				error: 'Email et mot de passe requis'
+			});
+		}
 
         // RECHERCHE : Trouver l'utilisateur dans la base
-        const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+		const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
 
         // VALIDATION : Vérifier que l'utilisateur existe
-        if (!user) {
-            return res.status(401).json({
-                error: 'Email ou mot de passe incorrect'
-            });
-        }
+		if (!user) {
+			return res.status(401).json({
+				error: 'Email ou mot de passe incorrect'
+			});
+		}
 
         // VALIDATION : Vérifier que le compte est validé par un admin
-        if (!user.account_validated) {
-            return res.status(403).json({
-                error: 'Votre compte n\'a pas encore été validé par un administrateur'
-            });
-        }
+		if (!user.account_validated) {
+			return res.status(403).json({
+				error: 'Votre compte n\'a pas encore été validé par un administrateur'
+			});
+		}
 
         // SÉCURITÉ : Vérifier le mot de passe
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) {
-            return res.status(401).json({
-                error: 'Email ou mot de passe incorrect'
-            });
-        }
+		const passwordMatch = await bcrypt.compare(password, user.password);
+		if (!passwordMatch) {
+			return res.status(401).json({
+				error: 'Email ou mot de passe incorrect'
+			});
+		}
 
         // GÉNÉRATION : Créer un token JWT valable 24h
-        const token = jwt.sign(
-            {
-                userId: user.id,
-                email: user.email,
-                pseudo: user.pseudo,
-                role: user.role,
-                city: user.city,
-                promo: user.promo
-            },
-            JWT_SECRET,
-            { expiresIn: JWT_EXPIRES_IN }
-        );
+		const token = jwt.sign(
+		{
+			userId: user.id,
+			email: user.email,
+			pseudo: user.pseudo,
+			role: user.role,
+			city: user.city,
+			promo: user.promo
+		},
+		JWT_SECRET,
+		{ expiresIn: JWT_EXPIRES_IN }
+		);
 
         // SUCCÈS : Renvoyer le token et les infos user
-        res.json({
-            message: 'Connexion réussie !',
-            token: token,
-            user: {
-                id: user.id,
-                pseudo: user.pseudo,
-                email: user.email,
-                city: user.city,
-                promo: user.promo,
-                role: user.role
-            }
-        });
+		res.json({
+			message: 'Connexion réussie !',
+			token: token,
+			user: {
+				id: user.id,
+				pseudo: user.pseudo,
+				email: user.email,
+				city: user.city,
+				promo: user.promo,
+				role: user.role
+			}
+		});
 
-    } catch (error) {
-        console.error('❌ Erreur lors de la connexion:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+	} catch (error) {
+		console.error('❌ Erreur lors de la connexion:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
 });
 
 
@@ -237,10 +237,10 @@ app.post('/api/login', async (req, res) => {
  */
 app.get('/api/profile', authenticateToken, (req, res) => {
     // req.user contient les infos décodées du token JWT
-    res.json({
-        message: 'Voici ton profil',
-        user: req.user
-    });
+	res.json({
+		message: 'Voici ton profil',
+		user: req.user
+	});
 });
 
 
@@ -253,24 +253,24 @@ app.get('/api/profile', authenticateToken, (req, res) => {
  * Retourne : Tous les utilisateurs de la plateforme
  */
 app.get('/api/users', authenticateToken, requireAdmin, (req, res) => {
-    try {
+	try {
         // Récupérer tous les users (sans les passwords hashés)
-        const users = db.prepare(`
+		const users = db.prepare(`
             SELECT id, email, pseudo, city, promo, role, email_verified, account_validated, created_at
             FROM users
             ORDER BY created_at DESC
-        `).all();
+		`).all();
 
-        res.json({
-            message: 'Liste des utilisateurs',
-            count: users.length,
-            users: users
-        });
+		res.json({
+			message: 'Liste des utilisateurs',
+			count: users.length,
+			users: users
+		});
 
-    } catch (error) {
-        console.error('❌ Erreur:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+	} catch (error) {
+		console.error('❌ Erreur:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
 });
 
 
@@ -290,11 +290,11 @@ app.get('/api/users', authenticateToken, requireAdmin, (req, res) => {
  *        Pour ça, utilise GET /api/challenges/:id
  */
 app.get('/api/challenges', authenticateToken, (req, res) => {
-    try {
-        const currentUserId = req.user.userId;
+	try {
+		const currentUserId = req.user.userId;
 
         // Récupérer la liste avec compteurs (optimisé pour la page d'accueil)
-        const challenges = db.prepare(`
+		const challenges = db.prepare(`
             SELECT
                 -- Infos du challenge
                 c.*,
@@ -323,18 +323,18 @@ app.get('/api/challenges', authenticateToken, (req, res) => {
             LEFT JOIN likes ul ON c.id = ul.challenge_id AND ul.user_id = ?
             GROUP BY c.id
             ORDER BY c.created_at DESC
-        `).all(currentUserId);
+		`).all(currentUserId);
 
-        res.json({
-            message: 'Liste des challenges',
-            count: challenges.length,
-            challenges: challenges
-        });
+		res.json({
+			message: 'Liste des challenges',
+			count: challenges.length,
+			challenges: challenges
+		});
 
-    } catch (error) {
-        console.error('❌ Erreur:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+	} catch (error) {
+		console.error('❌ Erreur:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
 });
 
 
@@ -354,12 +354,12 @@ app.get('/api/challenges', authenticateToken, (req, res) => {
  * - TOUS les likes (liste des users qui ont liké)
  */
 app.get('/api/challenges/:id', authenticateToken, (req, res) => {
-    try {
-        const challengeId = req.params.id;
-        const currentUserId = req.user.userId;
+	try {
+		const challengeId = req.params.id;
+		const currentUserId = req.user.userId;
 
         // ÉTAPE 1 : Récupérer le challenge avec infos de base
-        const challenge = db.prepare(`
+		const challenge = db.prepare(`
             SELECT
                 c.*,
                 u.id as author_id,
@@ -378,15 +378,15 @@ app.get('/api/challenges/:id', authenticateToken, (req, res) => {
             LEFT JOIN likes ul ON c.id = ul.challenge_id AND ul.user_id = ?
             WHERE c.id = ?
             GROUP BY c.id
-        `).get(currentUserId, challengeId);
+		`).get(currentUserId, challengeId);
 
         // Vérifier que le challenge existe
-        if (!challenge) {
-            return res.status(404).json({ error: 'Challenge introuvable' });
-        }
+		if (!challenge) {
+			return res.status(404).json({ error: 'Challenge introuvable' });
+		}
 
         // ÉTAPE 2 : Récupérer tous les commentaires
-        const comments = db.prepare(`
+		const comments = db.prepare(`
             SELECT
                 com.id,
                 com.content,
@@ -401,10 +401,10 @@ app.get('/api/challenges/:id', authenticateToken, (req, res) => {
             JOIN users u ON com.user_id = u.id
             WHERE com.challenge_id = ?
             ORDER BY com.created_at DESC
-        `).all(challengeId);
+		`).all(challengeId);
 
         // ÉTAPE 3 : Récupérer toutes les participations
-        const participations = db.prepare(`
+		const participations = db.prepare(`
             SELECT
                 p.id,
                 p.status,
@@ -421,10 +421,10 @@ app.get('/api/challenges/:id', authenticateToken, (req, res) => {
             JOIN users u ON p.user_id = u.id
             WHERE p.challenge_id = ?
             ORDER BY p.created_at DESC
-        `).all(challengeId);
+		`).all(challengeId);
 
         // ÉTAPE 4 : Récupérer tous les utilisateurs qui ont liké
-        const likedBy = db.prepare(`
+		const likedBy = db.prepare(`
             SELECT
                 u.id as user_id,
                 u.pseudo,
@@ -436,25 +436,25 @@ app.get('/api/challenges/:id', authenticateToken, (req, res) => {
             JOIN users u ON l.user_id = u.id
             WHERE l.challenge_id = ?
             ORDER BY l.created_at DESC
-        `).all(challengeId);
+		`).all(challengeId);
 
         // RÉPONSE : Envoyer tout en une seule fois
-        res.json({
-            message: 'Détails du challenge',
-            challenge: {
-                ...challenge,
-                comments_count: comments.length,
-                comments: comments,
-                participations_count: participations.length,
-                participations: participations,
-                liked_by: likedBy
-            }
-        });
+		res.json({
+			message: 'Détails du challenge',
+			challenge: {
+				...challenge,
+				comments_count: comments.length,
+				comments: comments,
+				participations_count: participations.length,
+				participations: participations,
+				liked_by: likedBy
+			}
+		});
 
-    } catch (error) {
-        console.error('❌ Erreur:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+	} catch (error) {
+		console.error('❌ Erreur:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
 });
 
 
@@ -462,41 +462,104 @@ app.get('/api/challenges/:id', authenticateToken, (req, res) => {
  * DELETE /api/challenges/:id - Supprimer un challenge
  */
 app.delete('/api/challenges/:id', authenticateToken, (req, res) => {
-    try {
-        const challengeId = req.params.id;
-        db.prepare('DELETE FROM challenges WHERE id = ?').run(challengeId);
-        res.json({ message: 'Challenge supprimé' });
-    } catch (error) {
-        console.error('Erreur:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+	try {
+		const challengeId = req.params.id;
+		db.prepare('DELETE FROM challenges WHERE id = ?').run(challengeId);
+		res.json({ message: 'Challenge supprimé' });
+	} catch (error) {
+		console.error('Erreur:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
 })
 
 /**
  * PUT /api/challenges/:id - Modifier un challenge
  */
 app.put('/api/challenges/:id', authenticateToken, (req, res) => {
-    try {
-        const challengeId = req.params.id;
-        const { title, description, category_id, difficulty, image_url, video_url } = req.body;
+	try {
+		const challengeId = req.params.id;
+		const { title, description, category_id, difficulty, image_url, video_url } = req.body;
 
-        if (!title || !description || !category_id || !difficulty) {
-            return res.status(400).json({ error: 'Tous les champs sont requis' });
-        }
+		if (!title || !description || !category_id || !difficulty) {
+			return res.status(400).json({ error: 'Tous les champs sont requis' });
+		}
 
-        db.prepare(`
+		db.prepare(`
             UPDATE challenges
             SET title = ?, description = ?, category_id = ?, difficulty = ?, image_url = ?, video_url = ?
             WHERE id = ?
-        `).run(title, description, category_id, difficulty, image_url || null, video_url || null, challengeId);
+		`).run(title, description, category_id, difficulty, image_url || null, video_url || null, challengeId);
 
-        res.json({ message: 'Challenge modifié' });
+		res.json({ message: 'Challenge modifié' });
 
-    } catch (error) {
-        console.error('Erreur:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+	} catch (error) {
+		console.error('Erreur:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
 })
+
+/**
+ * @api {get} /api/challenges/:id/participants - Liste des participants d'un challenge
+ * @apiName GetChallengeParticipants
+ * @apiGroup Challenges
+ * @apiHeader {String} Authorization Bearer TOKEN
+ * @apiParam {Number} id ID du challenge
+ * @apiSuccess {Object} challenge Liste des participants du challenge
+ * @apiError {String} error Message d'erreur
+ **/
+
+app.get('/api/challenges/:id/participants', authenticateToken, (req, res) => {
+	try {
+		const challengeId = req.params.id;
+
+        // ÉTAPE 1 : Récupérer le challenge avec infos de base
+		const challenge = db.prepare(`
+            SELECT c.*
+            FROM challenges c
+            WHERE c.id = ?
+		`).get(challengeId);
+
+        // Vérifier que le challenge existe
+		if (!challenge) {
+			return res.status(404).json({ error: 'Challenge introuvable' });
+		}
+
+
+        // ÉTAPE 2 : Récupérer toutes les participations
+		const participations = db.prepare(`
+            SELECT
+                p.id,
+                p.status,
+                p.proof_url,
+                p.completed_at,
+                p.created_at,
+                p.updated_at,
+                u.id as user_id,
+                u.pseudo,
+                u.avatar_url,
+                u.city,
+                u.promo
+            FROM participations p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.challenge_id = ?
+            ORDER BY p.created_at DESC
+		`).all(challengeId);
+
+
+        // RÉPONSE : Envoyer tout en une seule fois
+		res.json({
+			message: 'Participants du challenge',
+			challenge: {
+				participations_count: participations.length,
+				participations: participations
+			}
+		});
+
+	} catch (error) {
+		console.error('Erreur:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
+});
 
 /**
  * POST /api/challenges/ - Creer un challegnes
@@ -516,32 +579,32 @@ app.put('/api/challenges/:id', authenticateToken, (req, res) => {
  * */
 
 app.post('/api/challenges', authenticateToken, (req, res) => {
-    try {
+	try {
         // ÉTAPE 1 : Récupérer les données du body et du token
-        const { title, description, category_id, difficulty, image_url, video_url } = req.body;
+		const { title, description, category_id, difficulty, image_url, video_url } = req.body;
         const userId = req.user.userId;  // L'utilisateur connecté (vient du token JWT)
 
         // VALIDATION : Vérifier les champs obligatoires
         if (!title || !description || !category_id || !difficulty) {
-            return res.status(400).json({
-                error: 'Les champs title, description, category_id et difficulty sont obligatoires'
-            });
+        	return res.status(400).json({
+        		error: 'Les champs title, description, category_id et difficulty sont obligatoires'
+        	});
         }
 
         // VALIDATION : Vérifier que la difficulté est valide
         const validDifficulties = ['facile', 'moyen', 'difficile'];
         if (!validDifficulties.includes(difficulty)) {
-            return res.status(400).json({
-                error: 'La difficulté doit être "facile", "moyen" ou "difficile"'
-            });
+        	return res.status(400).json({
+        		error: 'La difficulté doit être "facile", "moyen" ou "difficile"'
+        	});
         }
 
         // VALIDATION : Vérifier que la catégorie existe
         const category = db.prepare('SELECT id FROM categories WHERE id = ?').get(category_id);
         if (!category) {
-            return res.status(404).json({
-                error: 'Catégorie introuvable. Les IDs valides sont de 1 à 10.'
-            });
+        	return res.status(404).json({
+        		error: 'Catégorie introuvable. Les IDs valides sont de 1 à 10.'
+        	});
         }
 
         // ÉTAPE 2 : Insérer le challenge en base de données
@@ -571,13 +634,13 @@ app.post('/api/challenges', authenticateToken, (req, res) => {
 
         // SUCCÈS : Retourner le challenge créé
         res.status(201).json({
-            message: 'Challenge créé avec succès !',
-            challenge: challenge
+        	message: 'Challenge créé avec succès !',
+        	challenge: challenge
         });
 
     } catch (error) {
-        console.error('❌ Erreur lors de la création du challenge:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
+    	console.error('❌ Erreur lors de la création du challenge:', error);
+    	res.status(500).json({ error: 'Erreur serveur' });
     }
 })
 
@@ -600,58 +663,58 @@ app.post('/api/challenges', authenticateToken, (req, res) => {
  * - likes_count : nombre total de likes
  */
 app.post('/api/challenges/:id/like', authenticateToken, (req, res) => {
-    try {
-        const challengeId = req.params.id;
-        const userId = req.user.userId;
+	try {
+		const challengeId = req.params.id;
+		const userId = req.user.userId;
 
         // VALIDATION : Vérifier que le challenge existe
-        const challenge = db.prepare('SELECT id FROM challenges WHERE id = ?').get(challengeId);
-        if (!challenge) {
-            return res.status(404).json({ error: 'Challenge introuvable' });
-        }
+		const challenge = db.prepare('SELECT id FROM challenges WHERE id = ?').get(challengeId);
+		if (!challenge) {
+			return res.status(404).json({ error: 'Challenge introuvable' });
+		}
 
         // VÉRIFICATION : Est-ce que l'utilisateur a déjà liké ?
-        const existingLike = db.prepare(
-            'SELECT id FROM likes WHERE user_id = ? AND challenge_id = ?'
-        ).get(userId, challengeId);
+		const existingLike = db.prepare(
+			'SELECT id FROM likes WHERE user_id = ? AND challenge_id = ?'
+			).get(userId, challengeId);
 
-        if (existingLike) {
+		if (existingLike) {
             // CAS 1 : Déjà liké → UNLIKER
-            db.prepare('DELETE FROM likes WHERE id = ?').run(existingLike.id);
+			db.prepare('DELETE FROM likes WHERE id = ?').run(existingLike.id);
 
             // Compter les likes restants
-            const likesCount = db.prepare(
-                'SELECT COUNT(*) as count FROM likes WHERE challenge_id = ?'
-            ).get(challengeId);
+			const likesCount = db.prepare(
+				'SELECT COUNT(*) as count FROM likes WHERE challenge_id = ?'
+				).get(challengeId);
 
-            return res.json({
-                message: 'Like retiré',
-                liked: false,
-                likes_count: likesCount.count
-            });
+			return res.json({
+				message: 'Like retiré',
+				liked: false,
+				likes_count: likesCount.count
+			});
 
-        } else {
+		} else {
             // CAS 2 : Pas encore liké → LIKER
-            db.prepare(
-                'INSERT INTO likes (user_id, challenge_id) VALUES (?, ?)'
-            ).run(userId, challengeId);
+			db.prepare(
+				'INSERT INTO likes (user_id, challenge_id) VALUES (?, ?)'
+				).run(userId, challengeId);
 
             // Compter les likes
-            const likesCount = db.prepare(
-                'SELECT COUNT(*) as count FROM likes WHERE challenge_id = ?'
-            ).get(challengeId);
+			const likesCount = db.prepare(
+				'SELECT COUNT(*) as count FROM likes WHERE challenge_id = ?'
+				).get(challengeId);
 
-            return res.json({
-                message: 'Challenge liké',
-                liked: true,
-                likes_count: likesCount.count
-            });
-        }
+			return res.json({
+				message: 'Challenge liké',
+				liked: true,
+				likes_count: likesCount.count
+			});
+		}
 
-    } catch (error) {
-        console.error('❌ Erreur:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+	} catch (error) {
+		console.error('❌ Erreur:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
 });
 
 /**
@@ -664,23 +727,23 @@ app.post('/api/challenges/:id/like', authenticateToken, (req, res) => {
  * - Toutes les catégories disponibles (id, name, description)
  */
 app.get('/api/categories', authenticateToken, (req, res) => {
-    try {
+	try {
         // Récupérer toutes les catégories
-        const categories = db.prepare(`
+		const categories = db.prepare(`
             SELECT * FROM categories ORDER BY name ASC
-        `).all();
+		`).all();
 
         // Renvoyer la réponse
-        res.json({
-            message: 'Liste des catégories',
-            count: categories.length,
-            categories: categories
-        });
+		res.json({
+			message: 'Liste des catégories',
+			count: categories.length,
+			categories: categories
+		});
 
-    } catch (error) {
-        console.error('❌ Erreur:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
-    }
+	} catch (error) {
+		console.error('❌ Erreur:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
 })
 
 
@@ -697,47 +760,47 @@ app.get('/api/categories', authenticateToken, (req, res) => {
  * - disconnect : Déconnexion du client
  */
 io.on('connection', (socket) => {
-    console.log('✅ Nouveau client connecté:', socket.id)
+	console.log('✅ Nouveau client connecté:', socket.id)
 
-    socket.on('setUsername', (username) => {
+	socket.on('setUsername', (username) => {
 
         //verifie l'unicite de lutilisateur
-        if (usernames.includes(username)) {
-            console.log(`❌ Nom refusé: ${username} (déjà pris)`)
-            socket.emit('usernameRejected', 'Ce nom d\'utilisateur est déjà pris')
-        } else {
-            socket.username = username
-            usernames.push(username)
-            console.log(`👤 Utilisateur ${username} connecté (ID: ${socket.id})`)
-            socket.emit('usernameAccepted', username, usernames)
+		if (usernames.includes(username)) {
+			console.log(`❌ Nom refusé: ${username} (déjà pris)`)
+			socket.emit('usernameRejected', 'Ce nom d\'utilisateur est déjà pris')
+		} else {
+			socket.username = username
+			usernames.push(username)
+			console.log(`👤 Utilisateur ${username} connecté (ID: ${socket.id})`)
+			socket.emit('usernameAccepted', username, usernames)
             // À TOUS les autres clients (pour mettre à jour leur liste)
-            socket.broadcast.emit('userJoined', username, usernames)
+			socket.broadcast.emit('userJoined', username, usernames)
 
-        }
-    })
+		}
+	})
 
-    socket.on('sendMessage', (text) => {
-        if (socket.username) {
-            const messageData = {
-                username: socket.username,
-                text: text,
-                timestamp: new Date().toISOString()
-            }
-            console.log(`💬 Message de ${socket.username}: ${text}`)
+	socket.on('sendMessage', (text) => {
+		if (socket.username) {
+			const messageData = {
+				username: socket.username,
+				text: text,
+				timestamp: new Date().toISOString()
+			}
+			console.log(`💬 Message de ${socket.username}: ${text}`)
             // Envoyer le message à TOUS les clients (y compris l'émetteur)
-            io.emit('message', messageData)
-        }
-    })
+			io.emit('message', messageData)
+		}
+	})
 
-    socket.on('disconnect', () => {
-        console.log('❌ Client déconnecté:', socket.username || socket.id)
+	socket.on('disconnect', () => {
+		console.log('❌ Client déconnecté:', socket.username || socket.id)
         // Retirer le username de la liste
-        if (socket.username) {
-            usernames = usernames.filter(name => name !== socket.username)
+		if (socket.username) {
+			usernames = usernames.filter(name => name !== socket.username)
             // Notifier TOUS les clients de la déconnexion
-            io.emit('userLeft', socket.username, usernames)
-        }
-    })
+			io.emit('userLeft', socket.username, usernames)
+		}
+	})
 })
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -745,6 +808,6 @@ io.on('connection', (socket) => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 serveurHTTP.listen(PORT, () => {
-    console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`)
-    console.log(`🔌 Socket.IO prêt à accepter des connexions`)
+	console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`)
+	console.log(`🔌 Socket.IO prêt à accepter des connexions`)
 })
