@@ -274,22 +274,22 @@ exports.likeChallenge = (req, res) => {
 		const challengeId = req.params.id;
 		const userId = req.user.userId;
 
-        // VALIDATION : Vérifier que le challenge existe
+		// VALIDATION : Vérifier que le challenge existe
 		const challenge = db.prepare('SELECT id FROM challenges WHERE id = ?').get(challengeId);
 		if (!challenge) {
 			return res.status(404).json({ error: 'Challenge introuvable' });
 		}
 
-        // VÉRIFICATION : Est-ce que l'utilisateur a déjà liké ?
+		// VÉRIFICATION : Est-ce que l'utilisateur a déjà liké ?
 		const existingLike = db.prepare(
 			'SELECT id FROM likes WHERE user_id = ? AND challenge_id = ?'
 			).get(userId, challengeId);
 
 		if (existingLike) {
-            // CAS 1 : Déjà liké → UNLIKER
+			// CAS 1 : Déjà liké → UNLIKER
 			db.prepare('DELETE FROM likes WHERE id = ?').run(existingLike.id);
 
-            // Compter les likes restants
+			// Compter les likes restants
 			const likesCount = db.prepare(
 				'SELECT COUNT(*) as count FROM likes WHERE challenge_id = ?'
 				).get(challengeId);
@@ -301,12 +301,12 @@ exports.likeChallenge = (req, res) => {
 			});
 
 		} else {
-            // CAS 2 : Pas encore liké → LIKER
+			// CAS 2 : Pas encore liké → LIKER
 			db.prepare(
 				'INSERT INTO likes (user_id, challenge_id) VALUES (?, ?)'
 				).run(userId, challengeId);
 
-            // Compter les likes
+			// Compter les likes
 			const likesCount = db.prepare(
 				'SELECT COUNT(*) as count FROM likes WHERE challenge_id = ?'
 				).get(challengeId);

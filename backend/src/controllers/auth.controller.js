@@ -93,31 +93,31 @@ exports.login = async (req, res) => {
 	try {
 		const { email, password } = req.body;
 
-        // VALIDATION : Vérifier que les champs sont présents
+		// VALIDATION : Vérifier que les champs sont présents
 		if (!email || !password) {
 			return res.status(400).json({
 				error: 'Email et mot de passe requis'
 			});
 		}
 
-        // RECHERCHE : Trouver l'utilisateur dans la base
+		// RECHERCHE : Trouver l'utilisateur dans la base
 		const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
 
-        // VALIDATION : Vérifier que l'utilisateur existe
+		// VALIDATION : Vérifier que l'utilisateur existe
 		if (!user) {
 			return res.status(401).json({
 				error: 'Email ou mot de passe incorrect'
 			});
 		}
 
-        // VALIDATION : Vérifier que le compte est validé par un admin
+		// VALIDATION : Vérifier que le compte est validé par un admin
 		if (!user.account_validated) {
 			return res.status(403).json({
 				error: 'Votre compte n\'a pas encore été validé par un administrateur'
 			});
 		}
 
-        // SÉCURITÉ : Vérifier le mot de passe
+		// SÉCURITÉ : Vérifier le mot de passe
 		const passwordMatch = await bcrypt.compare(password, user.password);
 		if (!passwordMatch) {
 			return res.status(401).json({
@@ -125,7 +125,7 @@ exports.login = async (req, res) => {
 			});
 		}
 
-        // GÉNÉRATION : Créer un token JWT valable 24h
+		// GÉNÉRATION : Créer un token JWT valable 24h
 		const token = jwt.sign(
 		{
 			userId: user.id,
@@ -139,7 +139,7 @@ exports.login = async (req, res) => {
 		{ expiresIn: config.JWT_EXPIRES_IN }
 		);
 
-        // SUCCÈS : Renvoyer le token et les infos user
+		// SUCCÈS : Renvoyer le token et les infos user
 		res.json({
 			message: 'Connexion réussie !',
 			token: token,

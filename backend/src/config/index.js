@@ -20,15 +20,15 @@ module.exports = {
 
 	CORS_OPTIONS: {
 		origin: (origin, callback) => { // Fonction pour vérifier si l'origine est autorisée
-        // Autoriser les requêtes sans origin (mobile apps, Postman, etc.)
+		// Autoriser les requêtes sans origin (mobile apps, Postman, etc.)
 			if (!origin) return callback(null, true);
 
-        // Autoriser les domaines ngrok
+		// Autoriser les domaines ngrok
 			if (origin.includes('.ngrok-free.dev') || origin.includes('.ngrok.io')) {
 				return callback(null, true);
 			}
 
-        // Vérifier si l'origine est dans la liste
+		// Vérifier si l'origine est dans la liste
 			if (allowedOrigins.includes(origin)) {
 				return callback(null, true);
 			}
