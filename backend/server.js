@@ -519,6 +519,69 @@ app.put('/api/challenges/:id', authenticateToken, (req, res) => {
 })
 
 /**
+ * @api {get} /api/challenges/:id/participants - Liste des participants d'un challenge
+ * @apiName GetChallengeParticipants
+ * @apiGroup Challenges
+ * @apiHeader {String} Authorization Bearer TOKEN
+ * @apiParam {Number} id ID du challenge
+ * @apiSuccess {Object} challenge Liste des participants du challenge
+ * @apiError {String} error Message d'erreur
+ **/
+
+app.get('/api/challenges/:id/participants', authenticateToken, (req, res) => {
+	try {
+		const challengeId = req.params.id;
+
+        // ÉTAPE 1 : Récupérer le challenge avec infos de base
+		const challenge = db.prepare(`
+            SELECT c.*
+            FROM challenges c
+            WHERE c.id = ?
+		`).get(challengeId);
+
+        // Vérifier que le challenge existe
+		if (!challenge) {
+			return res.status(404).json({ error: 'Challenge introuvable' });
+		}
+
+
+        // ÉTAPE 2 : Récupérer toutes les participations
+		const participations = db.prepare(`
+            SELECT
+                p.id,
+                p.status,
+                p.proof_url,
+                p.completed_at,
+                p.created_at,
+                p.updated_at,
+                u.id as user_id,
+                u.pseudo,
+                u.avatar_url,
+                u.city,
+                u.promo
+            FROM participations p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.challenge_id = ?
+            ORDER BY p.created_at DESC
+		`).all(challengeId);
+
+
+        // RÉPONSE : Envoyer tout en une seule fois
+		res.json({
+			message: 'Participants du challenge',
+			challenge: {
+				participations_count: participations.length,
+				participations: participations
+			}
+		});
+
+	} catch (error) {
+		console.error('Erreur:', error);
+		res.status(500).json({ error: 'Erreur serveur' });
+	}
+});
+
+/**
  * POST /api/challenges/ - Creer un challegnes
  *
  * Headers requis :
