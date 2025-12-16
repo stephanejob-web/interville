@@ -23,27 +23,6 @@ const app = express();
 // Configuration CORS - Liste des origines autorisées
 const allowedOrigins = config.ALLOWED_ORIGINS;
 
-// Fonction pour vérifier si l'origine est autorisée
-const corsOptions = {
-	origin: (origin, callback) => {
-        // Autoriser les requêtes sans origin (mobile apps, Postman, etc.)
-		if (!origin) return callback(null, true);
-
-        // Autoriser les domaines ngrok
-		if (origin.includes('.ngrok-free.dev') || origin.includes('.ngrok.io')) {
-			return callback(null, true);
-		}
-
-        // Vérifier si l'origine est dans la liste
-		if (allowedOrigins.includes(origin)) {
-			return callback(null, true);
-		}
-
-		callback(new Error('Non autorisé par CORS'));
-	},
-	credentials: true,
-	methods: ["GET", "POST", "PUT", "DELETE"]
-};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🔌 SOCKET.IO - Configuration du serveur WebSocket
@@ -52,7 +31,7 @@ const corsOptions = {
 const serveurHTTP = http.createServer(app)
 
 const io = new Server(serveurHTTP, {
-	cors: corsOptions
+	cors: config.CORS_OPTIONS
 })
 
 chatSocket(io);  // Initialiser le chat Socket.IO
@@ -62,7 +41,7 @@ chatSocket(io);  // Initialiser le chat Socket.IO
 // ═══════════════════════════════════════════════════════════════════════════
 
 // CORS : Autorise les requêtes depuis le frontend React (et ngrok)
-app.use(cors(corsOptions));
+app.use(cors(config.CORS_OPTIONS));
 
 // Parser JSON : Permet de lire les données JSON dans req.body
 app.use(express.json());
