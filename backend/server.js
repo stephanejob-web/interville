@@ -7,11 +7,11 @@ const config = require('./src/config');		  // Charger les variables d'environnem
 const cors = require('cors');                 // Permet les requêtes depuis le frontend
 const bcrypt = require('bcrypt');             // Pour hasher les mots de passe
 const jwt = require('jsonwebtoken');          // Pour créer et vérifier les tokens JWT
-const Database = require('better-sqlite3');   // Base de données SQLite
 const path = require('path');
 const http = require("http");                 // Pour créer le serveur HTTP
 const { Server } = require('socket.io');      // Pour Socket.IO
-const chatSocket = require('./src/socket/chat.socket');
+const chatSocket = require('./src/socket/chat.socket'); // Gestion du chat Socket.IO
+const db = require('./src/database');         // Importer la connexion à la base de données
 
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -56,14 +56,6 @@ const io = new Server(serveurHTTP, {
 })
 
 chatSocket(io);  // Initialiser le chat Socket.IO
-
-// ═══════════════════════════════════════════════════════════════════════════
-//   BASE DE DONNÉES - Connexion à SQLite
-// ═══════════════════════════════════════════════════════════════════════════
-
-const db = new Database(config.DB_PATH);
-db.pragma('foreign_keys = ON');  // Active les clés étrangères pour l'intégrité des données
-
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  MIDDLEWARE - Configuration Express
