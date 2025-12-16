@@ -11,8 +11,8 @@ const path = require('path');
 const http = require("http");                 // Pour créer le serveur HTTP
 const { Server } = require('socket.io');      // Pour Socket.IO
 require('dotenv').config();                   // Charger les variables d'environnement
+const chatSocket = require('./src/socket/chat.socket');
 
-let usernames = []
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  CONFIGURATION - Paramètres du serveur
@@ -23,29 +23,29 @@ const PORT = process.env.PORT || 3000;  // Port du serveur (3000 par défaut)
 
 // Configuration CORS - Liste des origines autorisées
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:5173'];
+? process.env.ALLOWED_ORIGINS.split(',')
+: ['http://localhost:5173'];
 
 // Fonction pour vérifier si l'origine est autorisée
 const corsOptions = {
-    origin: (origin, callback) => {
+	origin: (origin, callback) => {
         // Autoriser les requêtes sans origin (mobile apps, Postman, etc.)
-        if (!origin) return callback(null, true);
+		if (!origin) return callback(null, true);
 
         // Autoriser les domaines ngrok
-        if (origin.includes('.ngrok-free.dev') || origin.includes('.ngrok.io')) {
-            return callback(null, true);
-        }
+		if (origin.includes('.ngrok-free.dev') || origin.includes('.ngrok.io')) {
+			return callback(null, true);
+		}
 
         // Vérifier si l'origine est dans la liste
-        if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
+		if (allowedOrigins.includes(origin)) {
+			return callback(null, true);
+		}
 
-        callback(new Error('Non autorisé par CORS'));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"]
+		callback(new Error('Non autorisé par CORS'));
+	},
+	credentials: true,
+	methods: ["GET", "POST", "PUT", "DELETE"]
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -55,8 +55,10 @@ const corsOptions = {
 const serveurHTTP = http.createServer(app)
 
 const io = new Server(serveurHTTP, {
-    cors: corsOptions
+	cors: corsOptions
 })
+
+chatSocket(io);  // Initialiser le chat Socket.IO
 
 // Configuration JWT (tokens d'authentification)
 const JWT_SECRET = process.env.JWT_SECRET || 'votre_super_secret_key_a_changer_en_production_2024';
@@ -800,61 +802,7 @@ app.get('/api/admin/pending-users', authenticateToken, requireAdmin, (req, res) 
 	}
 });
 
-// ═══════════════════════════════════════════════════════════════════════════
-// 💬 SOCKET.IO - Gestionnaires d'événements temps réel
-// ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * EVENT: connection - Nouveau client connecté
- *
- * Gère la connexion d'un nouveau client WebSocket et écoute les événements suivants :
- * - setUsername : Définir le nom d'utilisateur (vérifie l'unicité)
- * - sendMessage : Envoyer un message au chat
- * - disconnect : Déconnexion du client
- */
-io.on('connection', (socket) => {
-	console.log('✅ Nouveau client connecté:', socket.id)
-
-	socket.on('setUsername', (username) => {
-
-        //verifie l'unicite de lutilisateur
-		if (usernames.includes(username)) {
-			console.log(`❌ Nom refusé: ${username} (déjà pris)`)
-			socket.emit('usernameRejected', 'Ce nom d\'utilisateur est déjà pris')
-		} else {
-			socket.username = username
-			usernames.push(username)
-			console.log(`👤 Utilisateur ${username} connecté (ID: ${socket.id})`)
-			socket.emit('usernameAccepted', username, usernames)
-            // À TOUS les autres clients (pour mettre à jour leur liste)
-			socket.broadcast.emit('userJoined', username, usernames)
-
-		}
-	})
-
-	socket.on('sendMessage', (text) => {
-		if (socket.username) {
-			const messageData = {
-				username: socket.username,
-				text: text,
-				timestamp: new Date().toISOString()
-			}
-			console.log(`💬 Message de ${socket.username}: ${text}`)
-            // Envoyer le message à TOUS les clients (y compris l'émetteur)
-			io.emit('message', messageData)
-		}
-	})
-
-	socket.on('disconnect', () => {
-		console.log('❌ Client déconnecté:', socket.username || socket.id)
-        // Retirer le username de la liste
-		if (socket.username) {
-			usernames = usernames.filter(name => name !== socket.username)
-            // Notifier TOUS les clients de la déconnexion
-			io.emit('userLeft', socket.username, usernames)
-		}
-	})
-})
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  DÉMARRAGE DU SERVEUR
