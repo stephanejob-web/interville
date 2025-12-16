@@ -3,6 +3,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 const express = require('express');           // Framework web pour créer l'API
+const config = require('./src/config');		  // Charger les variables d'environnement
 const cors = require('cors');                 // Permet les requêtes depuis le frontend
 const bcrypt = require('bcrypt');             // Pour hasher les mots de passe
 const jwt = require('jsonwebtoken');          // Pour créer et vérifier les tokens JWT
@@ -10,7 +11,6 @@ const Database = require('better-sqlite3');   // Base de données SQLite
 const path = require('path');
 const http = require("http");                 // Pour créer le serveur HTTP
 const { Server } = require('socket.io');      // Pour Socket.IO
-require('dotenv').config();                   // Charger les variables d'environnement
 const chatSocket = require('./src/socket/chat.socket');
 
 
@@ -19,12 +19,9 @@ const chatSocket = require('./src/socket/chat.socket');
 // ═══════════════════════════════════════════════════════════════════════════
 
 const app = express();
-const PORT = process.env.PORT || 3000;  // Port du serveur (3000 par défaut)
 
 // Configuration CORS - Liste des origines autorisées
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-? process.env.ALLOWED_ORIGINS.split(',')
-: ['http://localhost:5173'];
+const allowedOrigins = config.ALLOWED_ORIGINS;
 
 // Fonction pour vérifier si l'origine est autorisée
 const corsOptions = {
@@ -60,17 +57,11 @@ const io = new Server(serveurHTTP, {
 
 chatSocket(io);  // Initialiser le chat Socket.IO
 
-// Configuration JWT (tokens d'authentification)
-const JWT_SECRET = process.env.JWT_SECRET || 'votre_super_secret_key_a_changer_en_production_2024';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';  // Les tokens sont valables 24 heures
-
-
 // ═══════════════════════════════════════════════════════════════════════════
 //   BASE DE DONNÉES - Connexion à SQLite
 // ═══════════════════════════════════════════════════════════════════════════
 
-const dbPath = path.join(__dirname, 'database', 'interville.db');
-const db = new Database(dbPath);
+const db = new Database(config.DB_PATH);
 db.pragma('foreign_keys = ON');  // Active les clés étrangères pour l'intégrité des données
 
 
@@ -98,7 +89,7 @@ const authenticateToken = (req, res, next) => {
 	}
 
     // Vérifier que le token est valide
-	jwt.verify(token, JWT_SECRET, (err, user) => {
+	jwt.verify(token, config.JWT_SECRET, (err, user) => {
 		if (err) {
 			return res.status(403).json({ error: 'Token invalide ou expiré.' });
 		}
@@ -220,8 +211,8 @@ app.post('/api/login', async (req, res) => {
 			city: user.city,
 			promo: user.promo
 		},
-		JWT_SECRET,
-		{ expiresIn: JWT_EXPIRES_IN }
+		config.JWT_SECRET,
+		{ expiresIn: config.JWT_EXPIRES_IN }
 		);
 
         // SUCCÈS : Renvoyer le token et les infos user
@@ -808,7 +799,7 @@ app.get('/api/admin/pending-users', authenticateToken, requireAdmin, (req, res) 
 //  DÉMARRAGE DU SERVEUR
 // ═══════════════════════════════════════════════════════════════════════════
 
-serveurHTTP.listen(PORT, () => {
-	console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`)
+serveurHTTP.listen(config.PORT, () => {
+	console.log(`🚀 Serveur démarré sur http://localhost:${config.PORT}`)
 	console.log(`🔌 Socket.IO prêt à accepter des connexions`)
 })
