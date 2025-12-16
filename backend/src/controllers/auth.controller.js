@@ -3,6 +3,25 @@ const jwt = require('jsonwebtoken');
 const db = require('../database'); // Our new database index
 const config = require('../config');
 
+
+/**
+ * @api {post} /api/register Inscription d'un nouvel utilisateur
+ * @apiName Register
+ * @apiGroup Auth
+ * @apiDescription Crée un nouveau compte utilisateur. Seules les adresses e-mail @laplateforme.io sont acceptées.
+ *
+ * @apiParam {String} email Email de l'utilisateur (doit se terminer par @laplateforme.io).
+ * @apiParam {String} password Mot de passe de l'utilisateur en clair.
+ * @apiParam {String} pseudo Nom d'affichage de l'utilisateur.
+ * @apiParam {String} city Ville de l'utilisateur.
+ * @apiParam {String} promo Promotion de l'utilisateur.
+ *
+ * @apiSuccess (201) {String} message Message de succès.
+ * @apiSuccess (201) {Number} userId ID de l'utilisateur créé.
+ *
+ * @apiError (400) {String} error Champs manquants, domaine d'e-mail invalide ou e-mail déjà utilisé.
+ * @apiError (500) {String} error Erreur interne du serveur.
+ */
 exports.register = async (req, res) => {
 	try {
 		const { email, password, pseudo, city, promo } = req.body;
@@ -51,6 +70,25 @@ exports.register = async (req, res) => {
 	}
 };
 
+
+/**
+ * @api {post} /api/login Connexion d'un utilisateur
+ * @apiName Login
+ * @apiGroup Auth
+ * @apiDescription Authentifie un utilisateur et renvoie un jeton JWT. Le compte doit être validé par un administrateur.
+ *
+ * @apiParam {String} email Email de l'utilisateur.
+ * @apiParam {String} password Mot de passe de l'utilisateur.
+ *
+ * @apiSuccess {String} message Message de succès.
+ * @apiSuccess {String} token Jeton d'authentification JWT.
+ * @apiSuccess {Object} user Informations sur le profil de l'utilisateur.
+ *
+ * @apiError (400) {String} error Email et mot de passe requis.
+ * @apiError (401) {String} error Identifiants invalides.
+ * @apiError (403) {String} error Compte en cours de validation par un administrateur.
+ * @apiError (500) {String} error Erreur interne du serveur.
+ */
 exports.login = async (req, res) => {
 	try {
 		const { email, password } = req.body;
