@@ -20,9 +20,6 @@ const db = require('./src/database');         // Importer la connexion à la bas
 
 const app = express();
 
-// Configuration CORS - Liste des origines autorisées
-const allowedOrigins = config.ALLOWED_ORIGINS;
-
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🔌 SOCKET.IO - Configuration du serveur WebSocket
