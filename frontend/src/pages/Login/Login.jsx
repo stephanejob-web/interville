@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -24,11 +25,30 @@ export const Login = () => {
     }
 
     try {
-      console.log('Login attempt with:', { email, password });
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate('/');
+      // Appel à l'API backend pour se connecter
+      const response = await axios.post('http://localhost:3000/api/login', {
+        email: email,
+        password: password
+      });
+
+      // Si la connexion réussit, on reçoit un token
+      console.log('Connexion réussie !', response.data);
+
+      // Sauvegarder le token dans localStorage
+      localStorage.setItem('token', response.data.token);
+
+      // Sauvegarder les infos de l'utilisateur
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      // Rediriger vers la page d'accueil et recharger pour mettre à jour la Navbar
+      window.location.href = '/';
     } catch (error) {
-      setErrorMessage('Login failed. Please check your credentials.');
+      // Afficher le message d'erreur du serveur
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.error);
+      } else {
+        setErrorMessage('Erreur de connexion au serveur');
+      }
     } finally {
       setIsLoading(false);
     }

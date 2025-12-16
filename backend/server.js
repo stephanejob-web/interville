@@ -21,6 +21,32 @@ let usernames = []
 const app = express();
 const PORT = process.env.PORT || 3000;  // Port du serveur (3000 par défaut)
 
+// Configuration CORS - Liste des origines autorisées
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : ['http://localhost:5173'];
+
+// Fonction pour vérifier si l'origine est autorisée
+const corsOptions = {
+    origin: (origin, callback) => {
+        // Autoriser les requêtes sans origin (mobile apps, Postman, etc.)
+        if (!origin) return callback(null, true);
+
+        // Autoriser les domaines ngrok
+        if (origin.includes('.ngrok-free.dev') || origin.includes('.ngrok.io')) {
+            return callback(null, true);
+        }
+
+        // Vérifier si l'origine est dans la liste
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        callback(new Error('Non autorisé par CORS'));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"]
+};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 🔌 SOCKET.IO - Configuration du serveur WebSocket
@@ -29,15 +55,12 @@ const PORT = process.env.PORT || 3000;  // Port du serveur (3000 par défaut)
 const serveurHTTP = http.createServer(app)
 
 const io = new Server(serveurHTTP, {
-	cors: {
-		origin: "http://localhost:5173",
-		methods: ["GET", "POST"]
-	}
+    cors: corsOptions
 })
 
 // Configuration JWT (tokens d'authentification)
-const JWT_SECRET = 'votre_super_secret_key_a_changer_en_production_2024';
-const JWT_EXPIRES_IN = '24h';  // Les tokens sont valables 24 heures
+const JWT_SECRET = process.env.JWT_SECRET || 'votre_super_secret_key_a_changer_en_production_2024';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';  // Les tokens sont valables 24 heures
 
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -53,11 +76,8 @@ db.pragma('foreign_keys = ON');  // Active les clés étrangères pour l'intégr
 //  MIDDLEWARE - Configuration Express
 // ═══════════════════════════════════════════════════════════════════════════
 
-// CORS : Autorise les requêtes depuis le frontend React
-app.use(cors({
-    origin: 'http://localhost:5173',  // URL du frontend Vite
-    credentials: true                  // Autorise l'envoi de cookies
-}));
+// CORS : Autorise les requêtes depuis le frontend React (et ngrok)
+app.use(cors(corsOptions));
 
 // Parser JSON : Permet de lire les données JSON dans req.body
 app.use(express.json());

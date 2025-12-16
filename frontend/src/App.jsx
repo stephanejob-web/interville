@@ -1,11 +1,16 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar/Navbar';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { Home } from './pages/Home/Home';
 import { About } from './pages/About/About';
 import {Login} from "./pages/Login/Login";
 import { Register } from './pages/Register/Register';
 import { Chat } from './pages/Chat/Chat';
+import { Challenges } from './pages/Challenges/Challenges';
+import { MyChallenges } from './pages/MyChallenges/MyChallenges';
 import { CreateChallenge } from './pages/CreateChallenge/CreateChallenge';
+import { ChallengeDetail } from './pages/ChallengeDetail/ChallengeDetail';
+import { EditChallenge } from './pages/EditChallenge/EditChallenge';
 import { NotFound } from './pages/NotFound/NotFound';
 
 function App() {
@@ -19,8 +24,37 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login/>} />
             <Route path="/register" element={<Register />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/create-challenge" element={<CreateChallenge />} />
+            {/* Routes protégées : accessibles uniquement si connecté */}
+            <Route path="/challenges" element={
+              <ProtectedRoute>
+                <Challenges />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-challenges" element={
+              <ProtectedRoute>
+                <MyChallenges />
+              </ProtectedRoute>
+            } />
+            <Route path="/challenges/new" element={
+              <ProtectedRoute>
+                <CreateChallenge />
+              </ProtectedRoute>
+            } />
+            <Route path="/challenges/:id" element={
+              <ProtectedRoute>
+                <ChallengeDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/challenges/:id/edit" element={
+              <ProtectedRoute>
+                <EditChallenge />
+              </ProtectedRoute>
+            } />
+            <Route path="/chat" element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

@@ -10,4 +10,8 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    host: true, // Permet l'accès depuis le réseau
+    allowedHosts: ['.ngrok-free.dev', '.ngrok.io'], // Autorise tous les domaines ngrok
+  },
 })

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export const Register = () => {
   const [userFormData, setUserFormData] = useState({
@@ -69,24 +70,23 @@ export const Register = () => {
         promo: userFormData.promo
       };
 
-      console.log('Registration attempt with:', apiData);
-      
-      // Ici vous ferez l'appel à votre API
-      // const response = await fetch('/api/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(apiData)
-      // });
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setSuccessMessage('Account created successfully! Redirecting to sign in...');
-      
+      // Appel à l'API backend pour s'inscrire
+      const response = await axios.post('http://localhost:3000/api/register', apiData);
+
+      console.log('Inscription réussie !', response.data);
+
+      setSuccessMessage('Compte créé avec succès ! Redirection vers la page de connexion...');
+
       setTimeout(() => {
         navigate('/login');
       }, 2000);
     } catch (error) {
-      setErrorMessage('Registration failed. Please try again.');
+      // Afficher le message d'erreur du serveur
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.error);
+      } else {
+        setErrorMessage('Erreur de connexion au serveur');
+      }
     } finally {
       setIsLoading(false);
     }

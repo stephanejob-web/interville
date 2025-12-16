@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export const CreateChallenge = () => {
+export const EditChallenge = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -17,9 +18,9 @@ export const CreateChallenge = () => {
     video_url: ''
   });
 
-  // Récupérer les catégories au chargement
+  // Récupérer le challenge et les catégories au chargement
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
 
@@ -29,22 +30,48 @@ export const CreateChallenge = () => {
           return;
         }
 
-        // Récupérer les catégories
-        const response = await axios.get('http://localhost:3000/api/categories', {
+        // Récupérer le challenge
+        const challengeResponse = await axios.get(`http://localhost:3000/api/challenges/${id}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
-        setCategories(response.data.categories);
+        const challenge = challengeResponse.data.challenge;
+
+        // Vérifier que l'utilisateur est l'auteur
+        const userString = localStorage.getItem('user');
+        const user = userString ? JSON.parse(userString) : null;
+        if (!user || user.id !== challenge.author_id) {
+          setErrorMessage('Vous n\'êtes pas autorisé à modifier ce challenge');
+          setIsLoading(false);
+          return;
+        }
+
+        // Pré-remplir le formulaire
+        setFormData({
+          title: challenge.title,
+          description: challenge.description,
+          category_id: challenge.category_id,
+          difficulty: challenge.difficulty,
+          image_url: challenge.image_url || '',
+          video_url: challenge.video_url || ''
+        });
+
+        // Récupérer les catégories
+        const categoriesResponse = await axios.get('http://localhost:3000/api/categories', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        setCategories(categoriesResponse.data.categories);
         setIsLoading(false);
       } catch (error) {
         console.error('Erreur:', error);
-        setErrorMessage('Erreur lors du chargement des catégories');
+        setErrorMessage('Erreur lors du chargement');
         setIsLoading(false);
       }
     };
 
-    fetchCategories();
-  }, []);
+    fetchData();
+  }, [id]);
 
   // Gérer les changements dans le formulaire
   const handleChange = (e) => {
@@ -55,7 +82,7 @@ export const CreateChallenge = () => {
     }));
   };
 
-  // Créer le challenge
+  // Enregistrer les modifications
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
@@ -64,25 +91,25 @@ export const CreateChallenge = () => {
     try {
       const token = localStorage.getItem('token');
 
-      // Appel à l'API pour créer le challenge
-      const response = await axios.post(
-        'http://localhost:3000/api/challenges',
+      // Appel à l'API pour mettre à jour
+      await axios.put(
+        `http://localhost:3000/api/challenges/${id}`,
         formData,
         {
           headers: { 'Authorization': `Bearer ${token}` }
         }
       );
 
-      console.log('Challenge créé avec succès:', response.data);
+      console.log('Challenge modifié avec succès');
 
-      // Rediriger vers la page de détails du nouveau challenge
-      navigate(`/challenges/${response.data.challenge.id}`);
+      // Rediriger vers la page de détails
+      navigate(`/challenges/${id}`);
     } catch (error) {
       console.error('Erreur:', error);
       if (error.response && error.response.data) {
         setErrorMessage(error.response.data.error);
       } else {
-        setErrorMessage('Erreur lors de la création du challenge');
+        setErrorMessage('Erreur lors de la modification');
       }
       setIsSaving(false);
     }
@@ -99,20 +126,41 @@ export const CreateChallenge = () => {
     );
   }
 
+  // Affichage en cas d'erreur
+  if (errorMessage && !formData.title) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="container mx-auto px-6 py-12 max-w-2xl">
+          <div className="text-center text-red-600 bg-red-100 p-4 rounded">
+            {errorMessage}
+          </div>
+          <div className="text-center mt-4">
+            <button
+              onClick={() => navigate('/challenges')}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              ← Retour aux challenges
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-6 py-12 max-w-2xl">
         {/* Bouton retour */}
         <button
-          onClick={() => navigate('/challenges')}
+          onClick={() => navigate(`/challenges/${id}`)}
           className="text-gray-600 hover:text-gray-900 mb-8 flex items-center gap-2"
         >
-          ← Retour aux challenges
+          ← Retour au challenge
         </button>
 
         {/* Titre */}
         <h1 className="text-3xl font-light text-gray-900 mb-8">
-          Créer un challenge
+          Éditer le challenge
         </h1>
 
         {/* Formulaire */}
@@ -128,8 +176,7 @@ export const CreateChallenge = () => {
               value={formData.title}
               onChange={handleChange}
               required
-              placeholder="Ex: Faire 50 pompes en une série"
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -144,8 +191,7 @@ export const CreateChallenge = () => {
               onChange={handleChange}
               required
               rows="6"
-              placeholder="Décrivez votre challenge en détail..."
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -159,7 +205,7 @@ export const CreateChallenge = () => {
               value={formData.category_id}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <option value="">Sélectionner une catégorie</option>
               {categories.map(cat => (
@@ -180,7 +226,7 @@ export const CreateChallenge = () => {
               value={formData.difficulty}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <option value="">Sélectionner une difficulté</option>
               <option value="facile">Facile</option>
@@ -199,7 +245,7 @@ export const CreateChallenge = () => {
               name="image_url"
               value={formData.image_url}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
               placeholder="https://example.com/image.jpg"
             />
           </div>
@@ -214,7 +260,7 @@ export const CreateChallenge = () => {
               name="video_url"
               value={formData.video_url}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
               placeholder="https://youtube.com/watch?v=..."
             />
           </div>
@@ -233,11 +279,11 @@ export const CreateChallenge = () => {
               disabled={isSaving}
               className="px-6 py-2 bg-gray-900 text-white rounded hover:bg-gray-700 transition-colors disabled:opacity-50"
             >
-              {isSaving ? 'Création...' : 'Créer le challenge'}
+              {isSaving ? 'Enregistrement...' : 'Enregistrer'}
             </button>
             <button
               type="button"
-              onClick={() => navigate('/challenges')}
+              onClick={() => navigate(`/challenges/${id}`)}
               className="px-6 py-2 bg-gray-100 text-gray-900 rounded hover:bg-gray-200 transition-colors"
             >
               Annuler
