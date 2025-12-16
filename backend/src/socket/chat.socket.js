@@ -10,7 +10,7 @@
  * - sendMessage : Envoyer un message au chat
  * - disconnect : Déconnexion du client
  * @param {Server} io - Socket.IO server instance
- **/
+ */
 
 let usernames = []
 
