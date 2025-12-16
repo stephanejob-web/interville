@@ -12,12 +12,6 @@ const http = require("http");                 // Pour créer le serveur HTTP
 const { Server } = require('socket.io');      // Pour Socket.IO
 const chatSocket = require('./src/socket/chat.socket'); // Gestion du chat Socket.IO
 const db = require('./src/database');         // Importer la connexion à la base de données
-
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  CONFIGURATION - Paramètres du serveur
-// ═══════════════════════════════════════════════════════════════════════════
-
 const app = express();
 
 

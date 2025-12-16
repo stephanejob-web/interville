@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════════════════
+//  CONFIGURATION - Paramètres du serveur
+// ═══════════════════════════════════════════════════════════════════════════
+
 const path = require('path');
 require('dotenv').config();                   // Charger les variables d'environnement
 
