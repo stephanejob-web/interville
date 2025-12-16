@@ -1,6 +1,7 @@
 const path = require('path');
 require('dotenv').config();                   // Charger les variables d'environnement
 
+// Configuration CORS - Liste des origines autorisées
 const allowedOrigins =  process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:5173'];
 
 module.exports = {
