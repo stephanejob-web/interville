@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');          // Pour créer et vérifier les to
 const path = require('path');
 const http = require("http");                 // Pour créer le serveur HTTP
 const { Server } = require('socket.io');      // Pour Socket.IO
+const { authenticateToken, requireAdmin } = require('./src/middleware/auth'); // Middleware d'authentification
 const chatSocket = require('./src/socket/chat.socket'); // Gestion du chat Socket.IO
 const db = require('./src/database');         // Importer la connexion à la base de données
 const app = express();
@@ -36,38 +37,6 @@ app.use(cors(config.CORS_OPTIONS));
 
 // Parser JSON : Permet de lire les données JSON dans req.body
 app.use(express.json());
-
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 🔐 MIDDLEWARE D'AUTHENTIFICATION
-// ═══════════════════════════════════════════════════════════════════════════
-
-const authenticateToken = (req, res, next) => {
-	const authHeader = req.headers['authorization'];
-	const token = authHeader && authHeader.split(' ')[1];
-
-	if (!token) {
-		return res.status(401).json({ error: 'Token manquant. Authentification requise.' });
-	}
-
-    // Vérifier que le token est valide
-	jwt.verify(token, config.JWT_SECRET, (err, user) => {
-		if (err) {
-			return res.status(403).json({ error: 'Token invalide ou expiré.' });
-		}
-
-        // Token valide : ajouter les infos user à la requête
-		req.user = user;
-        next();  // Continuer vers la route
-    });
-};
-
-const requireAdmin = (req, res, next) => {
-	if (req.user.role !== 'admin') {
-		return res.status(403).json({ error: 'Accès refusé. Droits administrateur requis.' });
-	}
-	next();
-};
 
 
 // ═══════════════════════════════════════════════════════════════════════════
