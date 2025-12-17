@@ -99,34 +99,6 @@ app.get('/api/users', authenticateToken, requireAdmin, (req, res) => {
 	}
 });
 
-/**
- * GET /api/categories - Liste de toutes les catégories
- *
- * Headers requis :
- * - Authorization: Bearer TOKEN
- *
- * Retourne :
- * - Toutes les catégories disponibles (id, name, description)
- */
-app.get('/api/categories', authenticateToken, (req, res) => {
-	try {
-        // Récupérer toutes les catégories
-		const categories = db.prepare(`
-            SELECT * FROM categories ORDER BY name ASC
-		`).all();
-
-        // Renvoyer la réponse
-		res.json({
-			message: 'Liste des catégories',
-			count: categories.length,
-			categories: categories
-		});
-
-	} catch (error) {
-		console.error('❌ Erreur:', error);
-		res.status(500).json({ error: 'Erreur serveur' });
-	}
-})
 
 /**
  * @api {get} /api/admin/pending-users - Liste des utilisateurs en attente de validation (ADMIN UNIQUEMENT)
