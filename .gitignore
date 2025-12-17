@@ -50,3 +50,4 @@ frontend/package-lock.json
 package-lock.json
 
 backend/database/*.db
+apidoc/
