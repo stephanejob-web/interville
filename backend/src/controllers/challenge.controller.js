@@ -2,12 +2,17 @@
 const db = require('../database');
 
 /**
- * @api {get} /api/challenges Liste légère des défis
+ * @apiGroup Challenges
+ * @apiPermission Authentifié
+ */
+
+/**
+ * @api {get} /api/challenges Liste légère des challenges
  * @apiName GetChallenges
  * @apiGroup Challenges
- * @apiDescription Récupère tous les défis avec infos de base, auteur, catégorie et compteurs.
+ * @apiDescription Récupère tous les challenges avec infos de base, auteur, catégorie et compteurs.
  * @apiHeader {String} Authorization Bearer TOKEN
- * @apiSuccess {Object[]} challenges Liste des défis
+ * @apiSuccess {Object[]} challenges Liste des challenges
  * @apiError (500) {String} error Erreur interne du serveur.
  */
  /* Note : N'inclut PAS le détail des commentaires/likes/participations
@@ -63,13 +68,13 @@ exports.getAllChallenges = (req, res) => {
 };
 
 /**
- * @api {get} /api/challenges/:id Détails complets d'un défi
+ * @api {get} /api/challenges/:id Détails complets d'un challenge
  * @apiName GetChallengeById
  * @apiGroup Challenges
- * @apiDescription Récupère un défi avec ses commentaires, participations et likes.
+ * @apiDescription Récupère un challenge avec ses commentaires, participations et likes.
  * @apiHeader {String} Authorization Bearer TOKEN
  * @apiParam {Number} id ID du défi
- * @apiSuccess {Object} challenge Détails complets du défi
+ * @apiSuccess {Object} challenge Détails complets du challenge
  * @apiError (404) {String} error Challenge introuvable.
  * @apiError (500) {String} error Erreur interne du serveur.
  */
@@ -179,12 +184,12 @@ exports.getChallengeById = (req, res) => {
 };
 
 /**
- * @api {post} /api/challenges Créer un défi
+ * @api {post} /api/challenges Créer un challenge
  * @apiName CreateChallenge
  * @apiGroup Challenges
- * @apiDescription Permet à un utilisateur connecté de créer un nouveau défi.
+ * @apiDescription Permet à un utilisateur connecté de créer un nouveau challenge.
  * @apiHeader {String} Authorization Bearer TOKEN
- * @apiParam {Object} body Données du défi
+ * @apiBody {Object} body Données du challenge
  * @apiError (400) {String} error Champs obligatoires manquants ou invalides.
  * @apiError (404) {String} error Catégorie introuvable.
  * @apiError (500) {String} error Erreur interne du serveur.
@@ -260,7 +265,7 @@ exports.createChallenge = (req, res) => {
  * @api {post} /api/challenges/:id/like Liker/Unliker (Toggle)
  * @apiName LikeChallenge
  * @apiGroup Challenges
- * @apiDescription Permet à un utilisateur de liker ou unliker un défi (fonction toggle).
+ * @apiDescription Permet à un utilisateur de liker ou unliker un challenge (fonction toggle).
  * @apiHeader {String} Authorization Bearer TOKEN
  * @apiParam {Number} id ID du challenge à liker/unliker
  * @apiSuccess {String} message Message de succès
@@ -392,10 +397,10 @@ exports.getParticipants = (req, res) => {
  * @api {put} /api/challenges/:id Modifier un challenge
  * @apiName UpdateChallenge
  * @apiGroup Challenges
- * @apiDescription Permet de modifier un défi existant.
+ * @apiDescription Permet de modifier un challenge existant.
  * @apiHeader {String} Authorization Bearer TOKEN
- * @apiParam {Number} id ID du défi à modifier
- * @apiParam {Object} body Données du défi à modifier
+ * @apiParam {Number} id ID du challenge à modifier
+ * @apiBody {Object} body Données du challenge à modifier
  * @apiError (400) {String} error Champs obligatoires manquants.
  * @apiError (500) {String} error Erreur interne du serveur.
  */
@@ -424,12 +429,12 @@ exports.updateChallenge = (req, res) => {
 };
 
 /**
- * @api {delete} /api/challenges/:id Supprimer un défi
+ * @api {delete} /api/challenges/:id Supprimer un challenge
  * @apiName DeleteChallenge
  * @apiGroup Challenges
- * @apiDescription Permet de supprimer un défi existant.
+ * @apiDescription Permet de supprimer un challenge existant.
  * @apiHeader {String} Authorization Bearer TOKEN
- * @apiParam {Number} id ID du défi à supprimer
+ * @apiParam {Number} id ID du challenge à supprimer
  * @apiError (500) {String} error Erreur interne du serveur.
  */
 exports.deleteChallenge = (req, res) => {

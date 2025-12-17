@@ -1,4 +1,9 @@
 /**
+ * @apiGroup User
+ * @apiPermission Authentifié
+ */
+
+/**
  * @api {get} /api/profile Voir son profil
  * @apiName GetProfile
  * @apiGroup User

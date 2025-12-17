@@ -1,6 +1,11 @@
 const db = require('../database');
 
 /**
+ * @apiGroup User
+ * @apiPermission Authentifié
+ */
+
+/**
  * @api {get} /api/categories Liste de toutes les catégories
  * @apiName GetCategories
  * @apiGroup Categories

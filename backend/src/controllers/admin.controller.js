@@ -1,6 +1,11 @@
 const db = require('../database');
 
 /**
+ * @apiGroup Admin
+ * @apiPermission Admin
+ */
+
+/**
  * @api {get} /api/admin/users Liste de tous les utilisateurs
  * @apiName GetAllUsers
  * @apiGroup Admin

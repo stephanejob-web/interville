@@ -10,11 +10,11 @@ const config = require('../config');
  * @apiGroup Auth
  * @apiDescription Crée un nouveau compte utilisateur. Seules les adresses e-mail @laplateforme.io sont acceptées.
  *
- * @apiParam {String} email Email de l'utilisateur (doit se terminer par @laplateforme.io).
- * @apiParam {String} password Mot de passe de l'utilisateur en clair.
- * @apiParam {String} pseudo Nom d'affichage de l'utilisateur.
- * @apiParam {String} city Ville de l'utilisateur.
- * @apiParam {String} promo Promotion de l'utilisateur.
+ * @apiBody {String} email Email de l'utilisateur (doit se terminer par @laplateforme.io).
+ * @apiBody {String} password Mot de passe de l'utilisateur en clair.
+ * @apiBody {String} pseudo Nom d'affichage de l'utilisateur.
+ * @apiBody {String} city Ville de l'utilisateur.
+ * @apiBody {String} promo Promotion de l'utilisateur.
  *
  * @apiSuccess (201) {String} message Message de succès.
  * @apiSuccess (201) {Number} userId ID de l'utilisateur créé.
@@ -77,8 +77,8 @@ exports.register = async (req, res) => {
  * @apiGroup Auth
  * @apiDescription Authentifie un utilisateur et renvoie un jeton JWT. Le compte doit être validé par un administrateur.
  *
- * @apiParam {String} email Email de l'utilisateur.
- * @apiParam {String} password Mot de passe de l'utilisateur.
+ * @apiBody {String} email Email de l'utilisateur.
+ * @apiBody {String} password Mot de passe de l'utilisateur.
  *
  * @apiSuccess {String} message Message de succès.
  * @apiSuccess {String} token Jeton d'authentification JWT.
