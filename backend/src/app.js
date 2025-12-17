@@ -1,28 +1,34 @@
-// ═══════════════════════════════════════════════════════════════════════════
-// 📦 IMPORTS - Tous les modules nécessaires pour le serveur
-// ═══════════════════════════════════════════════════════════════════════════
-const config = require('./src/config');		  // Charger les variables d'environnement
-const http = require("http");                 // Pour créer le serveur HTTP
-const { Server } = require('socket.io');      // Pour Socket.IO
-const chatSocket = require('./src/socket/chat.socket'); // Gestion du chat Socket.IO
-const app = require('./src/app');
+const express = require('express');
+const cors = require('cors');
+const config = require('./config');
+const authRoutes = require('./routes/auth.routes');
+const challengeRoutes = require('./routes/challenge.routes');
+const categoryRoutes = require('./routes/category.routes');
+const userRoutes = require('./routes/user.routes');
+const adminRoutes = require('./routes/admin.routes');
+
+const app = express();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// 🔌 SOCKET.IO - Configuration du serveur WebSocket
+//  MIDDLEWARE - Configuration Express
 // ═══════════════════════════════════════════════════════════════════════════
-const serveurHTTP = http.createServer(app)
-
-const io = new Server(serveurHTTP, {
-	cors: config.CORS_OPTIONS
-})
-
-chatSocket(io);  // Initialiser le chat Socket.IO
+app.use(cors(config.CORS_OPTIONS));
+app.use(express.json());
 
 // ═══════════════════════════════════════════════════════════════════════════
-//  DÉMARRAGE DU SERVEUR
+// ROUTES PUBLIQUES (pas besoin de token)
 // ═══════════════════════════════════════════════════════════════════════════
+app.get('/', (req, res) => {
+	res.json({ message: 'Bienvenue sur le serveur Interville!' });
+});
+app.use('/api', authRoutes);
 
-serveurHTTP.listen(config.PORT, () => {
-	console.log(`🚀 Serveur démarré sur http://localhost:${config.PORT}`)
-	console.log(`🔌 Socket.IO prêt à accepter des connexions`)
-})
+// ═══════════════════════════════════════════════════════════════════════════
+//  ROUTES PROTÉGÉES - Nécessitent un token JWT valide
+// ═══════════════════════════════════════════════════════════════════════════
+app.use('/api', challengeRoutes);
+app.use('/api', categoryRoutes);
+app.use('/api', userRoutes);
+app.use('/api', adminRoutes);
+
+module.exports = app;
