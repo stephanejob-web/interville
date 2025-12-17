@@ -7,7 +7,6 @@ const config = require('./src/config');		  // Charger les variables d'environnem
 const cors = require('cors');                 // Permet les requêtes depuis le frontend
 const http = require("http");                 // Pour créer le serveur HTTP
 const { Server } = require('socket.io');      // Pour Socket.IO
-const { authenticateToken, requireAdmin } = require('./src/middleware/auth'); // Middleware d'authentification
 const chatSocket = require('./src/socket/chat.socket'); // Gestion du chat Socket.IO
 const app = express();
 const authRoutes = require('./src/routes/auth.routes');
