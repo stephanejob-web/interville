@@ -1,0 +1,12 @@
+{
+	"name": "Interville API",
+	"version": "0.0.0",
+	"description": "Documentation de l'API Interville",
+	"title": "Documentation API Interville",
+	"url": "http://localhost:3000",
+	"template": {
+		"forceLanguage": "fr",
+		"withGenerator": false,
+		"showRequiredLabels": true
+	}
+}
