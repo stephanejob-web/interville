@@ -9,13 +9,12 @@ const http = require("http");                 // Pour créer le serveur HTTP
 const { Server } = require('socket.io');      // Pour Socket.IO
 const { authenticateToken, requireAdmin } = require('./src/middleware/auth'); // Middleware d'authentification
 const chatSocket = require('./src/socket/chat.socket'); // Gestion du chat Socket.IO
-const db = require('./src/database');         // Importer la connexion à la base de données
 const app = express();
 const authRoutes = require('./src/routes/auth.routes');
 const challengeRoutes = require('./src/routes/challenge.routes');
 const categoryRoutes = require('./src/routes/category.routes');
 const userRoutes = require('./src/routes/user.routes');
-
+const adminRoutes = require('./src/routes/admin.routes');
 
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -57,72 +56,7 @@ app.use('/api', authRoutes);
 app.use('/api', challengeRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', userRoutes);
-
-/**
- * GET /api/users - Liste de tous les utilisateurs (ADMIN UNIQUEMENT)
- *
- * Headers requis :
- * - Authorization: Bearer TOKEN (avec role admin)
- *
- * Retourne : Tous les utilisateurs de la plateforme
- */
-app.get('/api/users', authenticateToken, requireAdmin, (req, res) => {
-	try {
-        // Récupérer tous les users (sans les passwords hashés)
-		const users = db.prepare(`
-            SELECT id, email, pseudo, city, promo, role, email_verified, account_validated, created_at
-            FROM users
-            ORDER BY created_at DESC
-		`).all();
-
-		res.json({
-			message: 'Liste des utilisateurs',
-			count: users.length,
-			users: users
-		});
-
-	} catch (error) {
-		console.error('❌ Erreur:', error);
-		res.status(500).json({ error: 'Erreur serveur' });
-	}
-});
-
-
-/**
- * @api {get} /api/admin/pending-users - Liste des utilisateurs en attente de validation (ADMIN UNIQUEMENT)
- * @apiHeader {String} Authorization Token JWT (Bearer TOKEN)
- * @apiPermission admin
- * @apiSuccess {String} message Message de succès
- * @apiSuccess {Number} count Nombre d'utilisateurs en attente
- * @apiSuccess {Object[]} pendingUsers Liste des utilisateurs en attente avec leurs informations
- * @apiError (401) {String} error Token manquant ou invalide
- * @apiError (403) {String} error Accès refusé. Droits administrateur requis.
- * @apiError (500) {String} error Erreur serveur
- **/
-
-app.get('/api/admin/pending-users', authenticateToken, requireAdmin, (req, res) => {
-	try {
-        // Récupérer tous les users en attente de validation
-		const pendingUsers = db.prepare(`
-            SELECT id, email, pseudo, city, promo, role, email_verified, account_validated, created_at
-            FROM users
-            ORDER BY created_at DESC
-            WHERE account_validated = 0 AND email_verified = 1
-		`).all();
-
-		res.json({
-			message: 'Liste des utilisateurs en attente de validation',
-			count: pendingUsers.length,
-			pendingUsers: pendingUsers
-		});
-
-	} catch (error) {
-		console.error('Erreur:', error);
-		res.status(500).json({ error: 'Erreur serveur' });
-	}
-});
-
-
+app.use('/api', adminRoutes);
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  DÉMARRAGE DU SERVEUR
