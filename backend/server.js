@@ -13,6 +13,7 @@ const db = require('./src/database');         // Importer la connexion à la bas
 const app = express();
 const authRoutes = require('./src/routes/auth.routes');
 const challengeRoutes = require('./src/routes/challenge.routes');
+const categoryRoutes = require('./src/routes/category.routes');
 
 
 
@@ -53,6 +54,7 @@ app.use('/api', authRoutes);
 //  ROUTES PROTÉGÉES - Nécessitent un token JWT valide
 // ═══════════════════════════════════════════════════════════════════════════
 app.use('/api', challengeRoutes);
+app.use('/api', categoryRoutes);
 /**
  * GET /api/profile - Voir son profil
  *
