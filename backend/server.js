@@ -14,6 +14,7 @@ const app = express();
 const authRoutes = require('./src/routes/auth.routes');
 const challengeRoutes = require('./src/routes/challenge.routes');
 const categoryRoutes = require('./src/routes/category.routes');
+const userRoutes = require('./src/routes/user.routes');
 
 
 
@@ -55,22 +56,7 @@ app.use('/api', authRoutes);
 // ═══════════════════════════════════════════════════════════════════════════
 app.use('/api', challengeRoutes);
 app.use('/api', categoryRoutes);
-/**
- * GET /api/profile - Voir son profil
- *
- * Headers requis :
- * - Authorization: Bearer TOKEN
- *
- * Retourne : Les infos du token (id, pseudo, email, etc.)
- */
-app.get('/api/profile', authenticateToken, (req, res) => {
-    // req.user contient les infos décodées du token JWT
-	res.json({
-		message: 'Voici ton profil',
-		user: req.user
-	});
-});
-
+app.use('/api', userRoutes);
 
 /**
  * GET /api/users - Liste de tous les utilisateurs (ADMIN UNIQUEMENT)
